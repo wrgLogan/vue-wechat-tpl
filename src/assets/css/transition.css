@@ -1,0 +1,38 @@
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0
+}
+
+/* foward animation */
+.forward-enter-active, .forward-leave-active{
+    transform: translate3d(0, 0, 0);
+    transition: all .3s;
+}
+
+.forward-enter{
+    opacity: 0;
+    transform: translate3d(30%, 0, 0);
+}
+
+.forward-leave-to{
+    opacity: 0;
+    transform: translate3d(-30%, 0, 0);
+}
+
+/* backward animation */
+.backward-enter-active, .backward-leave-active{
+    transform: translate3d(0, 0, 0);
+    transition: all .3s;
+}
+
+.backward-enter{
+    opacity: 0;
+    transform: translate3d(-30%, 0, 0);
+}
+
+.backward-leave-to{
+    opacity: 0;
+    transform: translate3d(30%, 0, 0);
+}
