@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-      <h2>{{ message }}</h2>
+      <upload />
   </div>
 </template>
 <script src="./script.js"></script>
