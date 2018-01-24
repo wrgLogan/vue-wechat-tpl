@@ -84,6 +84,8 @@ export default {
   height: 100px;
   background-size: cover;
   background-position: center;
+  opacity: 0;
+  transform: scale(3);
 }
 
 .file-container li:last-child .pic-item {

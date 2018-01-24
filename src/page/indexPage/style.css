@@ -1,7 +1,9 @@
 .page{
     overflow: auto;
+    overflow-x: hidden;
     height: 100%;
 }
+
 h2{
     font-size: .533333rem;
 }

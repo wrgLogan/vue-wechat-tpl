@@ -5,10 +5,15 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import pageSwitcher from './plugins/page-switcher.js'
-import './assets/css/transition.css'
+import './lib/css/transition.css'
+import anime from 'animejs'
+import gallery from './plugins/gallery.js'
 
 Vue.prototype.axios = axios;
+Vue.use(gallery);
+window.anime = anime;
 window.axios = axios;
+window.Vue = Vue;
 
 Vue.config.productionTip = false
 

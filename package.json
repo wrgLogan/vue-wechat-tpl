@@ -7,11 +7,13 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "debug": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 192.168.196.153",
+    "debugmi": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 192.168.43.13",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
   "dependencies": {
     "amfe-flexible": "^2.2.1",
+    "animejs": "^2.2.0",
     "axios": "^0.17.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
