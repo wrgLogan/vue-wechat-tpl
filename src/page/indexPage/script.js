@@ -1,5 +1,3 @@
-import upload from '@/components/upload.vue';
-
 export default {
     name: 'Index',
     data: function () {
@@ -8,9 +6,9 @@ export default {
         }
     },
     mounted (){
-        this.$gallery(`https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=306068080,2400069474&fm=27&gp=0.jpg`)
+        // this.$gallery(`https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=306068080,2400069474&fm=27&gp=0.jpg`)
     },
     components: {
-        upload
+        
     }
 }

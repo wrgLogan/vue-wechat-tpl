@@ -2,6 +2,7 @@
     overflow: auto;
     overflow-x: hidden;
     height: 100%;
+    background-image: url('../../assets/image/bg.png');
 }
 
 h2{
