@@ -18,6 +18,22 @@ module.exports = {
           'Accept' : 'application/json, text/plain',
           'X-Requested-With': 'XMLHttpRequest'
         },
+      },
+      '/hc/*': {
+        target: 'http://activitytest.minshenglife.com',
+        changeOrigin: true,
+        headers: {
+          'Accept' : 'application/json, text/plain',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+      },
+      '/rest/*': {
+        target: 'http://activitytest.minshenglife.com',
+        changeOrigin: true,
+        headers: {
+          'Accept' : 'application/json, text/plain',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
       }
     },
 

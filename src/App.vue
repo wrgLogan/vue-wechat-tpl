@@ -10,7 +10,6 @@ export default {
   name: "app",
   data: function() {
     return {
-      //   animation: ''
     };
   },
   computed: {

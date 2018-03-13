@@ -1,8 +1,6 @@
 <template>
     <div id="page" class="page">
-        <button 
-            v-safe-click="{fn: onSafeClick, params: { name: '123' }}"
-        >click</button>
+        <img src="../../assets/image/upload.png" alt="">
     </div>
 </template>
 <script src="./script.js"></script>
