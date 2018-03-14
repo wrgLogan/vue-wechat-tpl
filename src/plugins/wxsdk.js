@@ -52,6 +52,7 @@ WxSdk.prototype.apiTicket = function(url, _callback) {
         
         if (data.appId) {
             wxsdk.configOptions = data;
+            this.configOptions.debug = false;
             wxsdk.configWxApis(_callback);
         }
     });
@@ -60,12 +61,11 @@ WxSdk.prototype.apiTicket = function(url, _callback) {
 WxSdk.prototype.configWxApis = function(_callback) {
     var jsApiList = this.jsApiList || this.defaultJsApiList;
     this.configOptions.jsApiList = jsApiList;
-    this.configOptions.debug = false;
 
     console.log('配置微信初始化');
     
     wx.config({
-        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        debug: this.configOptions.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: this.configOptions.appId, // 必填，公众号的唯一标识
         timestamp: this.configOptions.timestamp, // 必填，生成签名的时间戳
         nonceStr: this.configOptions.noncestr, // 必填，生成签名的随机串
@@ -164,7 +164,7 @@ var install = function(Vue, option) {
 
     Vue.mixin({
         mounted: function() {
-            if(this.$options.didEnterPage) {
+            if(this.$options.type == 'page') {
                 var shareOption = this.$options.shareOption || wxsdk.defaultShareOption;
                 wxsdk.configShare(shareOption);
             }

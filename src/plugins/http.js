@@ -1,3 +1,61 @@
+var Lonix = function() {}
+
+Lonix.prototype.get = function(url, params) {
+    var xhr = new XMLHttpRequest;
+    var url = url + '?' + paramToQueryStr(params);
+
+    xhr.open('GET', url, true);
+    xhr.send();
+}
+
+Lonix.prototype.post = function(url, params, options) {
+    var xhr = new XMLHttpRequest;
+    var url = url;
+    var options = options || {};
+    var queryStr = paramToQueryStr(params);
+
+    xhr.open('POST', url, true);
+    setHeader(xhr, options.header);
+    if (!xhr.contentType) {
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+    } else if (xhr.contentType === 'application/json') {
+        queryStr = JSON.stringify(params);
+    }
+    xhr.send(queryStr);
+}
+
+var lonix = new Lonix;
+
+function setHeader(xhr, header) {
+    var header = header || {};
+    Object.keys(header).forEach(function(key) {
+        var value = header[key];
+
+        if (key === 'Content-Type' || key === 'content-type') {
+            xhr.contentType = value;
+        }
+
+        xhr.setRequestHeader(key, value);
+    })
+}
+
+function paramToQueryStr(params) {
+    var params = params || {};
+    var queryStr = '';
+
+    Object.keys(params).forEach(function(key) {
+        var value = params[key];
+
+        if (queryStr.length) {
+            queryStr += '&' + key + '=' + value;
+        } else {
+            queryStr += key + '=' + value;
+        };
+    });
+
+    return queryStr;
+}
+
 var install = function (Vue, options) {
     var axios = options.axios;
 

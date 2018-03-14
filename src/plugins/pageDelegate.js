@@ -6,7 +6,7 @@ var install = function(Vue, option) {
             }
         },
         mounted: function() {
-            if(this.$options.didEnterPage) {
+            if(this.$options.type == 'page') {
                 this.$options.didEnterPage.apply(this);
             }
         }

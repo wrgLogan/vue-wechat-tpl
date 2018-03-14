@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Index from '@/page/indexPage/index.vue'
 import About from '@/page/aboutPage/index.vue'
 
-Vue.use(Router)
+Vue.use(Router);
 
 var routes = [
   {
@@ -18,6 +18,17 @@ var routes = [
   }
 ]
 
+initPages(routes);
+
 export default new Router({
   routes: routes
-})
+});
+
+
+function initPages(pageList) {
+  for (var i = 0, len = pageList.length; i < len; i++) {
+    var page = pageList[i];
+
+    page.component.type = 'page';
+  }
+}

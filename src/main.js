@@ -8,6 +8,7 @@ import './lib/css/transition.css'
 import './lib/css/common.css'
 import initPlugin from './initPlugin/index.js'
 import wxsdk from './plugins/wxsdk.js'
+import rem from 'amfe-flexible'
 
 window.Vue = Vue;
 window.v = Vue.prototype;
@@ -23,7 +24,7 @@ v.$wxsdk.setDefaultShare({
 
 v.$wxsdk.apiTicket('/rest/v1/shares/jsapiticket');
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 var app = new Vue({

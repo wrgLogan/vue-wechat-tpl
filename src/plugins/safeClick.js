@@ -10,7 +10,7 @@ var install = function(Vue, options) {
                 setTimeout(function() {
                     lock = false;
                 });
-            }
+            };
 
             el.onclick = function() {
                 if (lock) {
@@ -19,7 +19,7 @@ var install = function(Vue, options) {
 
                 lock = true;
                 fn(params, open);
-            }
+            };
         }
     })
 }

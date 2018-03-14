@@ -13,10 +13,30 @@ export default {
     },
     methods: {
         onSafeClick: function(params, open) {
-            open();
+            
+        },
+        switchTo: function(path) {
+            this.$switchTo(path);
+        },
+        hideOuterBrowser: function() {
+            this.$wxsdk.hideOuterBrowser();
+        },
+        openOuterBrowser: function() {
+            this.$wxsdk.openOuterBrowser();
+        },
+        hideShareMemu: function() {
+            this.$wxsdk.hideShareMemu();
+        },
+        configShare: function() {
+            this.$wxsdk.configShare();
+        },
+        openDebug: function() {
+            this.$wxsdk.configOptions.debug = true;
+            this.$wxsdk.configWxApis();
+        },
+        closeDebug: function() {
+            this.$wxsdk.configOptions.debug = false;
+            this.$wxsdk.configWxApis();
         }
-    },
-    components: {
-    
     }
 }
