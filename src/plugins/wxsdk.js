@@ -224,9 +224,6 @@ var install = function(Vue, options) {
     Vue.prototype.$wxsdk = wxsdk;
 
     Vue.mixin({
-        beforeRouteUpdate(to, from, next) {
-            console.log(123);
-        },
         beforeRouteEnter(to, from, next) {
             var redirectPath = parseUrl('redirect_path');
 

@@ -1,6 +1,6 @@
 <template>
     <div id="page" class="page">
-
+        <h1>{{}}</h1>
         <!-- <img src="../../assets/image/upload.png" alt=""> -->
         <span>({{pathListArr.pathList0.length}}/ {{ maxFileLength }} )</span>
         <upload-block

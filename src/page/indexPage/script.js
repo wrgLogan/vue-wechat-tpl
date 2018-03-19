@@ -1,9 +1,8 @@
 export default {
     name: 'Index',
-    data: function () {
-        return {
-            message: 'Index'
-        }
+    title: '首页',
+    pageData: {
+        title: '微信sdk测试'
     },
     shareOption: {
          

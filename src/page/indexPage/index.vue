@@ -1,11 +1,11 @@
 <template>
     <div id="page" class="page">
         <header>
-            <h1>微信sdk测试</h1>
+            <h1>{{ title }}</h1>
         </header>
         <main>
-            <div class="btn-container"  @click="switchTo('/about')">
-                <button>About</button>
+            <div class="btn-container"  @click="switchTo('/sub', {age: '23'})">
+                <button>Sub</button>
             </div>
             <div class="btn-container" @click="hideOuterBrowser">
                 <button>禁止外部浏览器打开</button>

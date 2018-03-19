@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/page/indexPage/index.vue'
 import About from '@/page/aboutPage/index.vue'
+import Sub from '@/page/subPage/index.vue'
 
 Vue.use(Router);
 
@@ -15,6 +16,11 @@ var routes = [
     path: '/about',
     name: 'About',
     component: About
+  },
+  {
+    path: '/sub',
+    name: 'Sub',
+    component: Sub
   }
 ]
 

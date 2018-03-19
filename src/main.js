@@ -36,4 +36,4 @@ var app = new Vue({
   components: { App }
 });
 
-Vue.use(pageSwitcher, { router: router, vm: app });
+Vue.use(pageSwitcher, { router: router, vm: app, vue: Vue });
