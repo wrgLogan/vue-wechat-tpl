@@ -1,17 +1,18 @@
 <template>
     <div id="page" class="page">
-        <header>
-            <h1>About</h1>
-        </header>
-        <main>
-            <div class="container">
-                <p>这是一个基于vue的移动端开发模版</p>
-                <p>openId:{{openId || '未授权'}}</p>
-            </div>
-            <div class="btn-container"  @click="authReload()">
-                <button>授权</button>
-            </div>
-        </main>
+
+        <!-- <img src="../../assets/image/upload.png" alt=""> -->
+        <span>({{pathListArr.pathList0.length}}/ {{ maxFileLength }} )</span>
+        <upload-block
+                    :filelist="fileListArr['fileList0']"
+                    id=0
+                    :action="actionUrl"
+                    @file-change="fileChange"
+                    :limit="maxFileLength"
+                    @upload-error="uploadError"
+                    
+        ></upload-block>
+
     </div>
 </template>
 <script src="./script.js"></script>
