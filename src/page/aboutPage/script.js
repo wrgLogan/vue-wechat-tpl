@@ -1,13 +1,21 @@
+var link = 'http://activitytest.minshenglife.com/wxtest/index.html?redirect_path=about';
 export default {
     name: 'About',
     data: function () {
+        var openId = v.$url.parseUrl('openId');
         return {
-            message: 'About'
+            message: 'About',
+            openId: openId
         }
+    },
+    shareOption: {
+        title: 'About',
+        desc: '分享出去打开是about页面',
+        link: link,
+        imgUrl: 'https://cn.vuejs.org/images/logo.png'
     },
     willEnterPage() {
         console.log('willEnterPage');
-        console.log(this);
     },
     didEnterPage() {
         console.log('didEneterPage')
@@ -15,7 +23,9 @@ export default {
     mounted (){
         // this.$gallery(`https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=306068080,2400069474&fm=27&gp=0.jpg`)
     },
-    components: {
-        
+    methods: {
+        authReload() {
+            this.$wxsdk.authReload(link, {});
+        }
     }
 }

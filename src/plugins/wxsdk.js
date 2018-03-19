@@ -1,9 +1,19 @@
 import axios from 'axios';
 
-var WxSdk = function() {
+var devRedirectUri = 'http://healthtest.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
+var prodRedirectUri = 'http://health.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
+
+var WxSdk = function(options) {
+    var options = options || {};
+
     this.jsApiList = null;
     this.configOptions = null; // 微信初始化配置项
     this.configIsReady = false;
+    this.authUrl = null;
+    this.redirectUri = env === 'dev' ? devRedirectUri : prodRedirectUri;
+    this.shareMenuVisiable = true;
+    this.defaultShareVisiable = options.defaultShareVisiable === false ? false : true;
+    this.readyFnList = [];
 }
 
 // 默认开启所有接口
@@ -42,8 +52,7 @@ WxSdk.prototype.defaultJsApiList = [
     "scanQRCode"
 ]
 
-// wxsdk.apiTicket('http://healthtest.minshenglife.com/rest/v0)
-WxSdk.prototype.apiTicket = function(url, _callback) {
+WxSdk.prototype.apiTicket = function(url) {
     var wxsdk = this;
     var data = window.location.origin + location.pathname + location.search;
     
@@ -53,12 +62,13 @@ WxSdk.prototype.apiTicket = function(url, _callback) {
         if (data.appId) {
             wxsdk.configOptions = data;
             this.configOptions.debug = false;
-            wxsdk.configWxApis(_callback);
+            wxsdk.configWxApis();
         }
     });
 }
 
-WxSdk.prototype.configWxApis = function(_callback) {
+WxSdk.prototype.configWxApis = function() {
+    var wxsdk = this;
     var jsApiList = this.jsApiList || this.defaultJsApiList;
     this.configOptions.jsApiList = jsApiList;
 
@@ -73,7 +83,27 @@ WxSdk.prototype.configWxApis = function(_callback) {
         jsApiList: jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
 
-    _callback && wx.ready(_callback);
+    wx.ready(() => {
+        wxsdk.ready();
+    });
+}
+
+WxSdk.prototype.ready = function() {
+
+    while(this.readyFnList.length > 0) {
+        var fn = this.readyFnList.shift();
+        fn.apply(this);
+    }
+
+    this.configIsReady = true;
+}
+
+WxSdk.prototype.onReady = function(fn) {
+    if (this.configIsReady) {
+        fn.apply(this);
+    } else {
+        this.readyFnList.push(fn);
+    }
 }
 
 // 配置默认分享
@@ -83,6 +113,7 @@ WxSdk.prototype.setDefaultShare = function(option) {
 
 // 设置分享
 WxSdk.prototype.configShare = function(option) {
+
     var wxsdk = this;
     var option = option || {};
 
@@ -92,15 +123,11 @@ WxSdk.prototype.configShare = function(option) {
         imgUrl = option.imgUrl || this.defaultShareOption.imgUrl;
 
     console.log('配置分享');
-    console.log(title, desc, link, imgUrl);
+    console.log(title);
 
-    if (!wxsdk.configIsReady) {
-        wx.ready(function() {
-            setShare();
-        })
-    } else {
+    wxsdk.onReady(() => {
         setShare();
-    }
+    })
 
     function setShare() {
         console.log('set share');
@@ -129,44 +156,98 @@ WxSdk.prototype.configShare = function(option) {
             }
         });
     
-        // 显示微信分享功能
-        wx.showMenuItems({
-            menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
-        });
     }
     
 }
 
+WxSdk.prototype.openShareMenu = function() {
+    this.onReady(function() {
+        console.log('open share menu');
+        this.shareMenuVisiable = true;
+        wx.showMenuItems({
+            menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+        });
+    });
+}
+
 // 关闭分享菜单
-WxSdk.prototype.hideShareMemu = function() {
-    wx.hideMenuItems({
-        menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+WxSdk.prototype.hideShareMenu = function() {
+    this.onReady(function() {
+        console.log('hide share menu');
+        this.shareMenuVisiable = false;
+        wx.hideMenuItems({
+            menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+        });
     });
 }
 
 // 关闭别的浏览器打开
 WxSdk.prototype.hideOuterBrowser = function() {
-    wx.hideMenuItems({
-        menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
+    this.onReady(function() {
+        wx.hideMenuItems({
+            menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
+        });
     });
 }
 
 // 打开在别的浏览器打开菜单
 WxSdk.prototype.openOuterBrowser = function() {
-    wx.showMenuItems({
-        menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
-    })
+    this.onReady(function() {
+        wx.showMenuItems({
+            menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
+        });
+    });
 }
 
-var install = function(Vue, option) {
-    var wxsdk = new WxSdk;
+WxSdk.prototype.authReload = function(url, params) {
+    var wxsdk = this;
+    var url = url || '';
+
+    Object.keys(params).forEach(function(key, index) {
+        var value = params[key];
+
+        if (index === 0) {
+            url += `?${key}=${value}`;
+        } else {
+            url += `&${key}=${value}`;
+        };
+    });
+    // 配置授权链接
+    var authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${wxsdk.configOptions.appId}&redirect_uri=${wxsdk.redirectUri}&response_type=code&scope=snsapi_userinfo&state=${url}#wechat_redirect`;
+
+    // console.log(url, authUrl);
+    window.location.href = authUrl;
+}
+
+var install = function(Vue, options) {
+    var wxsdk = new WxSdk(options);
     Vue.prototype.$wxsdk = wxsdk;
 
     Vue.mixin({
+        beforeRouteUpdate(to, from, next) {
+            console.log(123);
+        },
+        beforeRouteEnter(to, from, next) {
+            var redirectPath = parseUrl('redirect_path');
+
+            if (redirectPath) {
+                var url = deleteUrlQuery('redirect_path');
+                window.location.href = url + `#/${redirectPath}`;
+            } else {
+                next();
+            }
+        },
         mounted: function() {
             if(this.$options.type == 'page') {
-                var shareOption = this.$options.shareOption || wxsdk.defaultShareOption;
-                wxsdk.configShare(shareOption);
+                if (this.$options.shareOption) {
+                    wxsdk.configShare(this.$options.shareOption);
+                    wxsdk.openShareMenu();
+                } else if (wxsdk.defaultShareVisiable === true) {
+                    wxsdk.configShare(wxsdk.defaultShareOption);
+                    wxsdk.openShareMenu();
+                } else {
+                    wxsdk.hideShareMemu();
+                }
             }
         }
     })
@@ -175,3 +256,71 @@ var install = function(Vue, option) {
 export default {
     install: install
 };
+
+// `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3d9f8ae1546fdea0&`
+// `redirect_uri=http://healthtest.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid&response_type=code&scope=snsapi_userinfo&`
+// `state=http://activitytest.minshenglife.com/lottery/index.html?isShare=true&redirect_path=#wechat_redirect`
+
+function parseUrl(queryKey) {
+    var search = location.search;
+
+    if (search.length > 0 && search.indexOf('?') > -1) {
+        search = search.substring(1);
+        var cArr = search.split('&');
+
+        for (var i = 0, len = cArr.length; i < len; i++) {
+            var item = cArr[i],
+                key = cArr[i].split('=')[0],
+                val = cArr[i].split('=')[1];
+
+            if (key === queryKey) {
+                return val;
+            }
+        }
+    }
+
+    return null;
+}
+
+function deleteUrlQuery(queryKey) {
+    var search = location.search;
+    var resSearch = '';
+    var queryArr = [].concat(queryKey);
+
+    if (search.length > 0 && search.indexOf('?') > -1) {
+        search = search.substring(1);
+        var cArr = search.split('&');
+
+        for (var i = 0, len = cArr.length; i < len; i++) {
+            var item = cArr[i],
+                key = cArr[i].split('=')[0],
+                val = cArr[i].split('=')[1];
+
+            if (queryArr.indexOf(key) === -1) {
+                if (resSearch.length == 0) {
+                    resSearch += `?${key}=${val}`;
+                } else {
+                    resSearch += `&${key}=${val}`;
+                }
+            } 
+        }
+    }
+
+    return location.origin + location.pathname + resSearch;
+}
+
+function insertUrlQuery(params) {
+    var search = location.search;
+
+    Object.keys(params).forEach((key) => {
+        var val = params[key];
+
+        if (search.length == 0) {
+            search += `?${key}=${val}`;
+        } else {
+            search += `&${key}=${val}`;
+        }
+    });
+
+    return location.origin + location.pathname + search;
+}

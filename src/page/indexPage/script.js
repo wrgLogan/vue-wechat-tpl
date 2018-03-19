@@ -8,15 +8,19 @@ export default {
     shareOption: {
          
     },
+    beforeRouteEnter(to, from, next) {
+        console.log('beforeRouteEnter -> index');
+        next();
+    },
     didEnterPage() {
         console.log('didEneterPage index')
     },
     methods: {
         onSafeClick: function(params, open) {
-            
-        },
-        switchTo: function(path) {
-            this.$switchTo(path);
+            console.log(params);
+            setTimeout(() => {
+                open();
+            }, 1000)
         },
         hideOuterBrowser: function() {
             this.$wxsdk.hideOuterBrowser();
@@ -25,10 +29,10 @@ export default {
             this.$wxsdk.openOuterBrowser();
         },
         hideShareMemu: function() {
-            this.$wxsdk.hideShareMemu();
+            this.$wxsdk.hideShareMenu();
         },
         configShare: function() {
-            this.$wxsdk.configShare();
+            this.$wxsdk.openShareMenu();
         },
         openDebug: function() {
             this.$wxsdk.configOptions.debug = true;

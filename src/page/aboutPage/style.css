@@ -2,8 +2,18 @@
     overflow: auto;
     overflow-x: hidden;
     height: 100%;
+    background-color: #eee;
 }
 
 h2{
     font-size: .533333rem;
+}
+
+.container{
+    margin: .533333rem 0px;
+    text-indent: .853333rem;
+}
+
+.container p{
+    font-size: .426667rem;
 }

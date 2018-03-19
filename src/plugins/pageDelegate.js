@@ -9,6 +9,14 @@ var install = function(Vue, option) {
             if(this.$options.type == 'page' && this.$options.didEnterPage) {
                 this.$options.didEnterPage.apply(this);
             }
+        },
+        methods: {
+            switchTo(path) {
+                this.$switchTo(path);
+            },
+            goBackward() {
+                this.$goBackward();
+            }
         }
     })
 }

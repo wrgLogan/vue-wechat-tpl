@@ -4,11 +4,8 @@
             <h1>微信sdk测试</h1>
         </header>
         <main>
-            <div class="btn-container"   v-safeClick="{fn: onSafeClick, params: {name: 'logan'}}">
-                <button>safe click</button>
-            </div>
             <div class="btn-container"  @click="switchTo('/about')">
-                <button>about</button>
+                <button>About</button>
             </div>
             <div class="btn-container" @click="hideOuterBrowser">
                 <button>禁止外部浏览器打开</button>
