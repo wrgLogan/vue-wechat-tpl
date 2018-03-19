@@ -13,6 +13,12 @@ var WxSdk = function(options) {
     this.redirectUri = env === 'dev' ? devRedirectUri : prodRedirectUri;
     this.shareMenuVisiable = true;
     this.defaultShareVisiable = options.defaultShareVisiable === false ? false : true;
+    this.defaultShareOption = {
+        title: '',
+        desc: '',
+        imgUrl: '',
+        link: ''
+    }
     this.readyFnList = [];
 }
 
@@ -122,8 +128,8 @@ WxSdk.prototype.configShare = function(option) {
         link = option.link || this.defaultShareOption.link,
         imgUrl = option.imgUrl || this.defaultShareOption.imgUrl;
 
-    console.log('配置分享');
-    console.log(title);
+    // console.log('配置分享');
+    // console.log(title);
 
     wxsdk.onReady(() => {
         setShare();

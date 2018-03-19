@@ -1,19 +1,17 @@
 export default {
     name: 'SubPage',
-    pageData: {
-        name: 'logan'
+    title: '第二页',
+    Data: {
+        name: 'logan',
+        age: '12'
     },
-    methods: {
-        setData(pageData) {
-            var pageData = pageData || {};
-            Object.keys(pageData).forEach(key => {
-                // if (!(key in this.$data)) {
-                    this.$data.name = pageData[key];
-                    // Object.defineProperty(this.$data, key, {value: pageData[key]});
-                // }
-            });
-            console.log(this.$data);
-            // this.name = 'logan';
-        }
-    }
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            vm.$data.title = 'hahaha'
+        })
+    },
+    didEnterPage: function() {
+        console.log(this.$data);
+    },
+    methods: {}
 }

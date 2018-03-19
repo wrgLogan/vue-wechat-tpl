@@ -1,7 +1,7 @@
 export default {
     name: 'Index',
     title: '首页',
-    pageData: {
+    Data: {
         title: '微信sdk测试'
     },
     shareOption: {

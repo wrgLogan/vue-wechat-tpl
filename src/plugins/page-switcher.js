@@ -1,7 +1,6 @@
 var install = function (Vue, options) {
     var router = options.router;
     var root = options.vm;
-    console.log(root);
     var defaultForward = options.defaultForward;
     var defaultBackward = options.defaultBackward;
     var pageData = {};

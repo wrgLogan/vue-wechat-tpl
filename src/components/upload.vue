@@ -48,10 +48,10 @@
   </div>
 </template>
 <script>
-    export default{
+    export default {
         name:'Upload-Template',
         props: ['filelist','id','action','limit'],
-        data(){
+        data: function() {
             return{
                 //action:'/rest/v0/noticeofloss/tmpmaterials/CLINIC_MEDICAL_RECORD/11111111111111'
             }
