@@ -5,6 +5,7 @@ import pageDelegate from '@/plugins/pageDelegate.js'
 import safeClick from '@/plugins/safeClick.js'
 import http from '@/plugins/http.js'
 import url from '@/plugins/url.js'
+import gallery from '@/plugins/gallery.js'
 
 
 var init = function() {
@@ -14,6 +15,7 @@ var init = function() {
     Vue.use(wxsdk, { defaultShareVisiable: true });  // 微信sdk封装
     Vue.use(pageDelegate);  // 页面生命周期
     Vue.use(safeClick);  // 防连点
+    Vue.use(gallery);
     // Vue.use(http, {domain: '/rest'})
 }
 

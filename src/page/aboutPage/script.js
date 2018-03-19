@@ -15,12 +15,6 @@ export default {
             },
         }
     },
-    shareOption: {
-        title: 'About',
-        desc: '分享出去打开是about页面',
-        link: link,
-        imgUrl: 'https://cn.vuejs.org/images/logo.png'
-    },
     willEnterPage() {
         console.log('willEnterPage');
     },

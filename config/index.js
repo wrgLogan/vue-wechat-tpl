@@ -2,7 +2,18 @@
 // Template version: 1.2.3
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
+const os = require('os');
+
+var localhost = '';
+try {
+  var network = os.networkInterfaces()
+  localhost = network[Object.keys(network)[0]][1].address
+} catch (e) {
+  localhost = 'localhost';
+}
+
+console.log(localhost);
 
 module.exports = {
   dev: {
@@ -38,7 +49,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: localhost, // can be overwritten by process.env.HOST
     port: 5000, // can be overwritten by process.env.HOST, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
