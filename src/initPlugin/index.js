@@ -13,7 +13,7 @@ var init = function() {
     Vue.use(message);
     Vue.use(url);
     Vue.use(wxsdk, { defaultShareVisiable: true });  // 微信sdk封装
-    Vue.use(pageDelegate);  // 页面生命周期
+    Vue.use(pageDelegate);  // 页面生命周期,页面间切换的封装，支持页面传值
     Vue.use(safeClick);  // 防连点
     Vue.use(gallery);
     // Vue.use(http, {domain: '/rest'})

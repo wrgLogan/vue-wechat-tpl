@@ -1,5 +1,5 @@
 var defaultTitle = document.title;
-
+var rendIndex = 0;
 var install = function(Vue, options) {
     var root;
     var router;
@@ -56,51 +56,48 @@ var install = function(Vue, options) {
                 // }
             });
 
+            pageData = {};
+
             return this.$options.Data;
         },
         beforeCreate: function() {
-            if (!root) {
-                root = this.$root;
+            rendIndex++;
+            // 第二个组件
+            if (rendIndex === 2) {
+                root = this;
                 router = this.$router;
             }
 
             if (this.$options.type == 'page') {
-                console.log('created');
-                console.log(this.$data);
+                // console.log('beforeCreat');
+                // console.log(this.$data);
             }
         },
         created: function() {
-            if (this.$options.type == 'page' && this.$options.willEnterPage) {
-                this.$options.willEnterPage.apply(this);
-            }
 
             if (this.$options.type == 'page') {
-                console.log('created');
-                console.log(this.$data);
+                
             }
         },
         beforeMount: function() {
             if (this.$options.type === 'page') {
-                console.log('beforeMount');
-                console.log(this.$data);
+                if (this.$options.willEnterPage) {
+                    this.$options.willEnterPage.apply(this);
+                }
+
             }
         },
         mounted: function() {
-
-            if (this.$options.type === 'page') {
-                console.log('mounted');
-                console.log(this.$data);
-            }
-
-            if(this.$options.type == 'page' && this.$options.didEnterPage) {
-                this.$options.didEnterPage.apply(this);
-            };
 
             if (this.$options.type === 'page'){
                 if ( this.$options.title) {
                     document.title = this.$options.title;
                 } else {
                     document.title = defaultTitle;
+                };
+
+                if(this.$options.didEnterPage) {
+                    this.$options.didEnterPage.apply(this);
                 };
             }
         },
@@ -110,11 +107,13 @@ var install = function(Vue, options) {
                 return this.$switchTo.apply(this, args);
             },
             goBackward() {
-                this.$goBackward();
+                var args = Array.prototype.slice.call(arguments);
+                return this.$goBackward.apply(this, args);
+            },
+            replace() {
+                var args = Array.prototype.slice.call(arguments);
+                return this.$replace.apply(this, args);
             }
-        },
-        computed: {
-            
         }
     })
 }

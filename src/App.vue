@@ -10,13 +10,9 @@ export default {
   name: "app",
   data: function() {
     return {
+      animation: ''
     };
   },
-  computed: {
-    animation: function() {
-      return this.$root.animation;
-    }
-  }
 };
 </script>
 <style>

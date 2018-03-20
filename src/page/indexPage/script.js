@@ -4,19 +4,17 @@ export default {
     Data: {
         title: '微信sdk测试'
     },
-    shareOption: {
-         
-    },
+    shareOption: {},
     beforeRouteEnter(to, from, next) {
-        console.log('beforeRouteEnter -> index');
+        // console.log('beforeRouteEnter -> index');
         next();
     },
+    beforeCreate() {
+    },
     didEnterPage() {
-        console.log('didEneterPage index')
     },
     methods: {
         onSafeClick: function(params, open) {
-            console.log(params);
             setTimeout(() => {
                 open();
             }, 1000)
