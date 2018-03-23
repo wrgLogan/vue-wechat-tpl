@@ -6,6 +6,7 @@ import safeClick from '@/plugins/safeClick.js'
 import http from '@/plugins/http.js'
 import url from '@/plugins/url.js'
 import gallery from '@/plugins/gallery.js'
+import actionMonitor from '@/plugins/action-monitor.js'
 
 
 var init = function() {
