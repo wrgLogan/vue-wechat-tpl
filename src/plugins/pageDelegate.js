@@ -6,8 +6,10 @@ var install = function(Vue, options) {
     var defaultForward = options && options.defaultForward ? options.defaultForward : 'forward';
     var defaultBackward = options && options.defaultBackward ? options.defaultBackward : 'backward';
     var pageData = {};
+    var switchLock = false;
 
     Vue.prototype.$switchTo = function(path, data, animation) {
+        if (switchLock) return;
         var routePath = '';
         if (typeof data === 'object') {
             pageData = data;
@@ -18,18 +20,19 @@ var install = function(Vue, options) {
         root.$data.animation = animation || defaultForward || 'forward';
         routePath = path + objToUrlQuery(pageData);
         router.push(routePath);
-        setTimeout(() => {
-            root.$data.animation = defaultBackward || 'backward';
-        }, 300);
+        
     };
 
     Vue.prototype.$goBackward = function(animation) {
+        if (switchLock) return;
         root.$data.animation = animation || defaultBackward || 'backward';
         router.back();
+
+        
     };
 
     Vue.prototype.$replace = function(path, data, animation) {
-        
+        if (switchLock) return;
         if (typeof data === 'object') {
             pageData = data;
         } else if (typeof data === 'string') {
@@ -38,10 +41,15 @@ var install = function(Vue, options) {
 
         root.$data.animation = animation || 'fade';
         router.replace(path);
+        
+    };
+
+    function resetAnimation() {
         setTimeout(() => {
             root.$data.animation = defaultBackward || 'backward';
+            switchLock = false;
         }, 300);
-    };
+    }
 
     Vue.mixin({
         // 每个页面的data是上个页面传递的data和页面的Data组合的值，同名属性该页面的优先级更高
@@ -108,6 +116,8 @@ var install = function(Vue, options) {
                 if(this.$options.didEnterPage) {
                     this.$options.didEnterPage.apply(this);
                 };
+
+                resetAnimation()
             }
         },
         methods: {
