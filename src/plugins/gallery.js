@@ -1,6 +1,7 @@
 var $CONTAINER = undefined;
 var picItems = [];
 
+// 这是一个图片查看器，可双指缩放
 var install = function (Vue, options) {
     
     Vue.prototype.$gallery = function (url, urlList) {

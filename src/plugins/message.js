@@ -1,6 +1,15 @@
 import shareUrl from '../assets/image/share.png'
 import yesUrl from '../assets/image/yes.png'
 import warnUrl from '../assets/image/warning.png'
+/**
+ * 弹框插件
+ * alert
+ * confirm
+ * prompt
+ * toast
+ * warning
+ * success
+*/
 
 var install = function(Vue, options) {
 
@@ -408,6 +417,59 @@ var install = function(Vue, options) {
                     $modal.remove();
                 }, 300)
             }
+        },
+        toast: function(content) {
+            var $modal = document.createElement('DIV');
+            var $overlay = createOverlay();
+
+            $modal.style.zIndex = 2;
+			$modal.style.position = 'absolute';
+			$modal.style.top = '0px';
+            $modal.style.left = '0px';
+     		$modal.style.width = '100%';
+            $modal.style.height = '100%';
+    
+            $modal.className = 'message-modal';
+            $modal.appendChild($overlay);
+
+            var $wrapper = document.createElement('DIV');
+            var wrapperStyle = {
+                'position': 'absolute',
+                'top': '6.4rem',
+                'left': '50%',
+                'transform': 'translateX(-50%)',
+                'maxWidth': '4rem',
+                'padding': '0.18666666666666668rem 0.3466666666666667rem 0.26666666666666666rem',
+                'backgroundColor': 'rgba(0,0,0,.8)',
+                'color': '#fff',
+                'fontSize': '0.48rem',
+                'textAlign': 'center',
+                'borderRadius': '0.26666666666666666rem',
+                'opacity': '.1',
+                'transition': 'all .3s'
+            }
+            
+            Object.assign($wrapper.style, wrapperStyle);
+            $modal.appendChild($wrapper);
+
+            var $txt = document.createElement('p');
+            $txt.innerText = content;
+            $txt.style.fontSize = '0.4266666666666667rem';
+            $txt.style.color = '#fff';
+            $wrapper.appendChild($txt);
+
+            setTimeout(() => {
+                $wrapper.style.opacity = 1;
+            });
+
+            setTimeout(() => {
+                $wrapper.style.opacity = 0;
+                setTimeout(() => {
+                    $modal.remove();
+                }, 500);
+            }, 2000);
+
+            document.body.appendChild($modal);
         },
         success: function(content) {
             var $modal = document.createElement('DIV');

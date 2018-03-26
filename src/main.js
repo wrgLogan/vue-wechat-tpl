@@ -14,7 +14,7 @@ Vue.config.productionTip = false;
 // Vue.config.devtools = false;
 
 /* eslint-disable no-new */
-var app = new Vue({
+new Vue({
   el: '#app',
   data: {},
   router,

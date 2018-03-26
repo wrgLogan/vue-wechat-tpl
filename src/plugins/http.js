@@ -56,6 +56,7 @@ function paramToQueryStr(params) {
     return queryStr;
 }
 
+// 给axios包了一层，加了domain字段 后台不同服务器的部署会导致domain不一样 比如/rest/v0/getUserInfo /hc/v0/getUserInfo
 var install = function (Vue, options) {
     var axios = options.axios;
 

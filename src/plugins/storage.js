@@ -1,3 +1,8 @@
+/**
+ * 封装了sessionStorage localStorage
+ * this.$sessionStorage.setItem('example', {});
+ * this.$sessionStorage.getItem('example');
+ * */ 
 var install = function(Vue, options) {
     window.sessionStorage.clear();
     Vue.prototype.$sessionStorage = {

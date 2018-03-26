@@ -8,7 +8,7 @@ var install = function(Vue, options) {
     var pageData = {};
 
     Vue.prototype.$switchTo = function(path, data, animation) {
-        
+        var routePath = '';
         if (typeof data === 'object') {
             pageData = data;
         } else if (typeof data === 'string') {
@@ -16,7 +16,8 @@ var install = function(Vue, options) {
         }
 
         root.$data.animation = animation || defaultForward || 'forward';
-        router.push(path);
+        routePath = path + objToUrlQuery(pageData);
+        router.push(routePath);
         setTimeout(() => {
             root.$data.animation = defaultBackward || 'backward';
         }, 300);
@@ -49,14 +50,19 @@ var install = function(Vue, options) {
             if (!this.$options.Data) {
                 this.$options.Data = {};
             }
-
+            // console.log(this.$route.query);
             Object.keys(pageData).forEach(key => {
-                // if (!(key in this.$options.Data) || !this.$options.Data[key]) {
-                    this.$options.Data[key] = pageData[key];
-                // }
+                this.$options.Data[key] = pageData[key];
+            });
+
+            Object.keys(this.$route.query).forEach(key => {
+                this.$options.Data[key] = this.$route.query[key];
             });
 
             pageData = {};
+
+            console.log(this);
+            console.log(this.$options.Data);
 
             return this.$options.Data;
         },
@@ -68,15 +74,17 @@ var install = function(Vue, options) {
                 router = this.$router;
             }
 
-            if (this.$options.type == 'page') {
-                // console.log('beforeCreat');
-                // console.log(this.$data);
+            if (root && this.$parent === root) {
+                this.$options.type = 'page';
+                root.page = this;
             }
-        },
-        created: function() {
 
             if (this.$options.type == 'page') {
                 
+            }
+        },
+        created: function() {
+            if (this.$options.type == 'page') {
             }
         },
         beforeMount: function() {
@@ -88,8 +96,9 @@ var install = function(Vue, options) {
             }
         },
         mounted: function() {
-
+            
             if (this.$options.type === 'page'){
+                // console.log(this);
                 if ( this.$options.title) {
                     document.title = this.$options.title;
                 } else {
@@ -114,10 +123,31 @@ var install = function(Vue, options) {
                 var args = Array.prototype.slice.call(arguments);
                 return this.$replace.apply(this, args);
             }
+        },
+        watch: {
+            
         }
-    })
+    });
+
 }
 
 export default {
     install: install
 };
+
+function objToUrlQuery(params) {
+    var search = '';
+
+    Object.keys(params).forEach((key) => {
+        var val = params[key];
+        if (typeof val === 'number' || typeof val === 'string') {
+            if (search.length == 0) {
+                search += `?${key}=${encodeURIComponent(val)}`;
+            } else {
+                search += `&${key}=${encodeURIComponent(val)}`;
+            }
+        }
+    });
+
+    return search;
+}

@@ -58,6 +58,7 @@ WxSdk.prototype.defaultJsApiList = [
     "scanQRCode"
 ]
 
+// 签名接口 程序进入时调用 传入签名接口url
 WxSdk.prototype.apiTicket = function(url) {
     var wxsdk = this;
     var data = window.location.origin + location.pathname + location.search;
@@ -73,6 +74,7 @@ WxSdk.prototype.apiTicket = function(url) {
     });
 }
 
+// 配置微信api 签名后调用
 WxSdk.prototype.configWxApis = function() {
     var wxsdk = this;
     var jsApiList = this.jsApiList || this.defaultJsApiList;
@@ -94,6 +96,7 @@ WxSdk.prototype.configWxApis = function() {
     });
 }
 
+// 
 WxSdk.prototype.ready = function() {
 
     while(this.readyFnList.length > 0) {
@@ -166,6 +169,7 @@ WxSdk.prototype.configShare = function(option) {
     
 }
 
+// 打开分享菜单 
 WxSdk.prototype.openShareMenu = function() {
     this.onReady(function() {
         console.log('open share menu');
@@ -205,6 +209,7 @@ WxSdk.prototype.openOuterBrowser = function() {
     });
 }
 
+// 授权登陆
 WxSdk.prototype.authReload = function(url, params) {
     var wxsdk = this;
     var url = url || '';
