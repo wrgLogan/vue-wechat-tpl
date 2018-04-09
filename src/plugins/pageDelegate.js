@@ -1,5 +1,7 @@
 var defaultTitle = document.title;
 var rendIndex = 0;
+var firstMounted = true;
+
 var install = function(Vue, options) {
     var root;
     var router;
@@ -48,7 +50,7 @@ var install = function(Vue, options) {
         setTimeout(() => {
             root.$data.animation = defaultBackward || 'backward';
             switchLock = false;
-        }, 300);
+        }, 480);
     }
 
     Vue.mixin({
@@ -69,9 +71,6 @@ var install = function(Vue, options) {
 
             pageData = {};
 
-            console.log(this);
-            console.log(this.$options.Data);
-
             return this.$options.Data;
         },
         beforeCreate: function() {
@@ -84,7 +83,7 @@ var install = function(Vue, options) {
 
             if (root && this.$parent === root) {
                 this.$options.type = 'page';
-                root.page = this;
+                app.page = this;
             }
 
             if (this.$options.type == 'page') {
@@ -117,7 +116,14 @@ var install = function(Vue, options) {
                     this.$options.didEnterPage.apply(this);
                 };
 
-                resetAnimation()
+                console.log('mounted', this.$data);
+                
+                if (!firstMounted) {
+                    resetAnimation()
+                } else {
+                    firstMounted = false;
+                };
+                
             }
         },
         methods: {
