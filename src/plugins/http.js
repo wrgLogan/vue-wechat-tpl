@@ -15,7 +15,7 @@ Lonix.prototype.post = function(url, params, options) {
     var queryStr = paramToQueryStr(params);
 
     xhr.open('POST', url, true);
-    setHeader(xhr, options.header);
+    setHeader(xhr, options.headers);
     if (!xhr.contentType) {
         xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
     } else if (xhr.contentType === 'application/json') {
