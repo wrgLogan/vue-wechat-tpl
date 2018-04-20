@@ -14,7 +14,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$switchTo = function(path, data, animation) {
         if (switchLock) return;
-        setTimeout(() => {switchLock = true;}, 100)
+        switchLock = true;
         var routePath = '';
         if (typeof data === 'object') {
             pageData = data;
@@ -30,7 +30,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$goBackward = function(animation) {
         if (switchLock) return;
-        setTimeout(() => {switchLock = true;}, 100)
+        switchLock = true;
         root.$data.animation = animation || defaultBackward || 'backward';
         router.back();
 
@@ -39,7 +39,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$replace = function(path, data, animation) {
         if (switchLock) return;
-        setTimeout(() => {switchLock = true;}, 100)
+        switchLock = true;
         if (typeof data === 'object') {
             pageData = data;
         } else if (typeof data === 'string') {
@@ -52,6 +52,7 @@ var install = function(Vue, options) {
     };
 
     function resetAnimation() {
+        console.log('reset animation');
         return new Promise(resolve => {
             setTimeout(() => {
                 root.$data.animation = defaultBackward || 'backward';
@@ -121,12 +122,14 @@ var install = function(Vue, options) {
                 };
                 
                 if (!firstMounted) {
+                    console.log(111);
                     resetAnimation().then(() => {
                         if(this.$options.didEnterPage) {
                             this.$options.didEnterPage.call(this, this.$data);
                         };
                     });
                 } else {
+                    console.log(222);
                     firstMounted = false;
                     setTimeout(() => {
                         if(this.$options.didEnterPage) {
@@ -158,6 +161,7 @@ var install = function(Vue, options) {
     });
 
     function pageDelegate(comp, _callback) {
+        console.log(comp.$options);
         if (comp.$options.isPage) {
             _callback(pageData);
         }

@@ -4,36 +4,3 @@
     height: 100%;
     background-color: #eee;
 }
-
-header{
-    text-align: center;
-    margin-top: .6rem;
-    margin-bottom: .533333rem;
-}
-
-main{
-    padding: 0 .4rem;
-}
-
-h1{
-    font-size: .8rem;
-}
-
-.btn-container{
-    margin-bottom: .3rem;
-}
-
-button{
-    width: 100%;
-    height: 1.2rem;
-    background-color: #409eff;
-    color: #fff;
-    font-size: .48rem;
-    outline: none;
-    border-radius: .133333rem;
-    border: none;
-}
-
-button:active{
-    background-color: #3584d6;
-}

@@ -1,7 +1,6 @@
 export default {
     name: 'Index',
     isPage: true,  // 必填项
-    title: '首页',
     Data: {
         title: '微信sdk测试'
     },
@@ -12,30 +11,21 @@ export default {
         console.log('did')
     },
     methods: {
-        onSafeClick: function(params, open) {
-            setTimeout(() => {
-                open();
-            }, 1000)
+        onTouchleft() {
+            console.log('touch left');
+            this.$message.success('touch left');
         },
-        hideOuterBrowser: function() {
-            this.$wxsdk.hideOuterBrowser();
+        onTouchright() {
+            console.log('touch right');
+            this.$message.success('touch right');
         },
-        openOuterBrowser: function() {
-            this.$wxsdk.openOuterBrowser();
+        onTouchup() {
+            console.log('touch up');
+            this.$message.success('touch up');
         },
-        hideShareMemu: function() {
-            this.$wxsdk.hideShareMenu();
-        },
-        configShare: function() {
-            this.$wxsdk.openShareMenu();
-        },
-        openDebug: function() {
-            this.$wxsdk.configOptions.debug = true;
-            this.$wxsdk.configWxApis();
-        },
-        closeDebug: function() {
-            this.$wxsdk.configOptions.debug = false;
-            this.$wxsdk.configWxApis();
+        onTouchdown() {
+            console.log('touch down');
+            this.$message.success('touch down');
         }
     }
 }
