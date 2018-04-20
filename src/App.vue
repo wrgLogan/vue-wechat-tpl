@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <transition :name="animation">
-            <router-view class="page-container"></router-view>
+            <router-view class="page-container" comp-type="page"></router-view>
         </transition>
     </div>
 </template>

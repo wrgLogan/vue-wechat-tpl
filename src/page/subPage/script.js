@@ -1,5 +1,6 @@
 export default {
     name: 'SubPage',
+    isPage: true,
     title: '第二页',
     Data: {
         name: 'logan',
@@ -10,8 +11,9 @@ export default {
             vm.$data.title = 'hahaha'
         })
     },
-    didEnterPage: function() {
-        console.log(this.$data);
+    willEnterPage: function(data) {
+    },
+    didEnterPage: function(data) {
     },
     methods: {}
 }

@@ -1,3 +1,87 @@
+import axios from 'axios';
+
+var Http = function () {
+    this.defaultHeaders = {};
+    this.apiGroups = {default: ''};
+}
+
+Http.prototype.get = function (path, domain, opt) {
+    if (typeof domain !== 'string') {
+        opt = domain;
+        domain = 'default';
+    }
+    var dmStr = this.apiGroups[domain] || '';
+
+    return axios.get(`${dmStr + path}`, opt);
+};
+
+Http.prototype.post = function (path, domain, opt) {
+    if ((typeof domain) !== 'string') {
+        opt = domain;
+        domain = 'default';
+    }
+
+    var dmStr = this.apiGroups[domain] || '';
+    console.log(domain);
+    return axios.post(`${dmStr + path}`, opt);
+}
+
+Http.prototype.setDomain = function (domain) {
+    this.domain = domain;
+}
+
+Http.prototype.setAppKey = function (appkey) {
+    axios.defaults.headers.common.appkey = appkey;
+}
+
+Http.prototype.initDefaultHeaders = function (xhr) {
+    var http = this;
+
+    Object.keys(this.defaultHeaders).forEach(key => {
+        var val = this.defaultHeaders[key];
+        console.log(key, val);
+        xhr.setRequestHeader(key, val);
+    });
+}
+
+Http.prototype.setApiGroups = function(groupParams) {
+   
+    for (let i = 0, len = groupParams.length; i < len; i++) {
+        var params = groupParams[i];
+
+        this.apiGroups[params.domain] = params.path;
+    }
+}
+
+Http.prototype.joinActivity = function() {
+
+    var oid = parseUrl('oid');
+
+    if (!oid) {
+        console.log('没有找到oid');
+        return;
+    }
+
+    this.setDefaultHeaders({
+        oid: oid
+    });
+    axios.post('act/activity/join', {});
+}
+
+// 给axios包了一层，加了domain字段 后台不同服务器的部署会导致domain不一样 比如/rest/v0/getUserInfo /hc/v0/getUserInfo
+var install = function (Vue, options) {
+    var http = new Http();
+    var apiGroups = options.apiGroups;
+    Vue.prototype.$http = http;
+    options.appkey && http.setAppKey(options.appkey);
+    options.apiGroups && http.setApiGroups(options.apiGroups);
+    http.joinActivity();
+};
+
+export default {
+    install: install
+};
+
 var Lonix = function() {}
 
 Lonix.prototype.get = function(url, params) {
@@ -56,40 +140,23 @@ function paramToQueryStr(params) {
     return queryStr;
 }
 
-// 给axios包了一层，加了domain字段 后台不同服务器的部署会导致domain不一样 比如/rest/v0/getUserInfo /hc/v0/getUserInfo
-var install = function (Vue, options) {
-    var axios = options.axios;
+function parseUrl(queryKey) {
+    var search = location.search;
 
-    var Http = function (domain) {
-        this.domain = domain || '';
-        this.defaultHeaders = {};
+    if (search.length > 0 && search.indexOf('?') > -1) {
+        search = search.substring(1);
+        var cArr = search.split('&');
+
+        for (var i = 0, len = cArr.length; i < len; i++) {
+            var item = cArr[i],
+                key = cArr[i].split('=')[0],
+                val = cArr[i].split('=')[1];
+
+            if (key === queryKey) {
+                return val;
+            }
+        }
     }
 
-    Http.prototype.get = function (path, opt) {
-        return axios.get(`${this.domain + path}`, opt);
-    };
-
-    Http.prototype.post = function (path, opt) {
-        return axios.post(`${this.domain + path}`, opt);
-    }
-
-    Http.prototype.setDomain = function (domain) {
-        this.domain = domain;
-    }
-
-    Http.prototype.initDefaultHeaders = function (xhr) {
-        var http = this;
-
-        Object.keys(this.defaultHeaders).forEach(key => {
-            var val = this.defaultHeaders[key];
-            console.log(key, val);
-            xhr.setRequestHeader(key, val);
-        });
-    }
-
-    Vue.prototype.$http = new Http(options.domain);
-};
-
-export default {
-    install: install
-};
+    return null;
+}

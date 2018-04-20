@@ -1,3 +1,5 @@
+import { INSPECT_MAX_BYTES } from "buffer";
+
 var defaultTitle = document.title;
 var rendIndex = 0;
 var firstMounted = true;
@@ -12,6 +14,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$switchTo = function(path, data, animation) {
         if (switchLock) return;
+        setTimeout(() => {switchLock = true;}, 100)
         var routePath = '';
         if (typeof data === 'object') {
             pageData = data;
@@ -27,6 +30,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$goBackward = function(animation) {
         if (switchLock) return;
+        setTimeout(() => {switchLock = true;}, 100)
         root.$data.animation = animation || defaultBackward || 'backward';
         router.back();
 
@@ -35,6 +39,7 @@ var install = function(Vue, options) {
 
     Vue.prototype.$replace = function(path, data, animation) {
         if (switchLock) return;
+        setTimeout(() => {switchLock = true;}, 100)
         if (typeof data === 'object') {
             pageData = data;
         } else if (typeof data === 'string') {
@@ -47,11 +52,20 @@ var install = function(Vue, options) {
     };
 
     function resetAnimation() {
-        setTimeout(() => {
-            root.$data.animation = defaultBackward || 'backward';
-            switchLock = false;
-        }, 480);
+        return new Promise(resolve => {
+            setTimeout(() => {
+                root.$data.animation = defaultBackward || 'backward';
+                switchLock = false;
+                resolve();
+            }, 480);    
+        });
     }
+
+    /**
+     * loadData => beforeRouteEnter
+     * willEnterPage 
+     * didEnterPage
+    */
 
     Vue.mixin({
         // 每个页面的data是上个页面传递的data和页面的Data组合的值，同名属性该页面的优先级更高
@@ -80,51 +94,49 @@ var install = function(Vue, options) {
                 root = this;
                 router = this.$router;
             }
-
+            
             if (root && this.$parent === root) {
-                this.$options.type = 'page';
                 app.page = this;
             }
 
-            if (this.$options.type == 'page') {
-                
-            }
+            
         },
         created: function() {
-            if (this.$options.type == 'page') {
-            }
+            pageDelegate(this, pageData => {
+                if (this.$options.willEnterPage) {
+                    this.$options.willEnterPage.call(this, this.$data);
+                }
+            });
         },
         beforeMount: function() {
-            if (this.$options.type === 'page') {
-                if (this.$options.willEnterPage) {
-                    this.$options.willEnterPage.apply(this);
-                }
-
-            }
+            
         },
         mounted: function() {
             
-            if (this.$options.type === 'page'){
-                // console.log(this);
+            pageDelegate(this, pageDate => {
                 if ( this.$options.title) {
                     document.title = this.$options.title;
                 } else {
                     document.title = defaultTitle;
                 };
-
-                if(this.$options.didEnterPage) {
-                    this.$options.didEnterPage.apply(this);
-                };
-
-                console.log('mounted', this.$data);
                 
                 if (!firstMounted) {
-                    resetAnimation()
+                    resetAnimation().then(() => {
+                        if(this.$options.didEnterPage) {
+                            this.$options.didEnterPage.call(this, this.$data);
+                        };
+                    });
                 } else {
                     firstMounted = false;
+                    setTimeout(() => {
+                        if(this.$options.didEnterPage) {
+                            this.$options.didEnterPage.call(this, this.$data);
+                        };
+                    }, 300);
+                    
                 };
+            });
                 
-            }
         },
         methods: {
             switchTo() {
@@ -141,9 +153,15 @@ var install = function(Vue, options) {
             }
         },
         watch: {
-            
+        
         }
     });
+
+    function pageDelegate(comp, _callback) {
+        if (comp.$options.isPage) {
+            _callback(pageData);
+        }
+    }
 
 }
 
@@ -167,3 +185,4 @@ function objToUrlQuery(params) {
 
     return search;
 }
+

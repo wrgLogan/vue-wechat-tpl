@@ -1,17 +1,15 @@
 export default {
     name: 'Index',
+    isPage: true,  // 必填项
     title: '首页',
     Data: {
         title: '微信sdk测试'
     },
-    shareOption: {},
-    beforeRouteEnter(to, from, next) {
-        // console.log('beforeRouteEnter -> index');
-        next();
+    willEnterPage: function(data) {
+        console.log('will');
     },
-    beforeCreate() {
-    },
-    didEnterPage() {
+    didEnterPage(data) {
+        console.log('did')
     },
     methods: {
         onSafeClick: function(params, open) {

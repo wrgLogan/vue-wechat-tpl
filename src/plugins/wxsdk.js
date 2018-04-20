@@ -246,19 +246,22 @@ var install = function(Vue, options) {
             }
         },
         mounted: function() {
-            if(this.$options.type == 'page') {
-                if (this.$options.shareOption) {
-                    wxsdk.configShare(this.$options.shareOption);
-                    wxsdk.openShareMenu();
-                } else if (wxsdk.defaultShareVisiable === true) {
-                    wxsdk.configShare(wxsdk.defaultShareOption);
-                    wxsdk.openShareMenu();
-                } else {
-                    wxsdk.hideShareMemu();
+
+            setTimeout(() => {
+                if(this.$options.isPage) {
+                    if (this.$options.shareOption) {
+                        wxsdk.configShare(this.$options.shareOption);
+                        wxsdk.openShareMenu();
+                    } else if (wxsdk.defaultShareVisiable === true) {
+                        wxsdk.configShare(wxsdk.defaultShareOption);
+                        wxsdk.openShareMenu();
+                    } else {
+                        wxsdk.hideShareMemu();
+                    }
                 }
-            }
+            }, 100);
         }
-    })
+    });
 }
 
 export default {

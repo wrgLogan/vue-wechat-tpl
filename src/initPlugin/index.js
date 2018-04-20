@@ -8,6 +8,10 @@ import url from '@/plugins/url.js'
 import gallery from '@/plugins/gallery.js'
 import actionMonitor from '@/plugins/action-monitor.js'
 
+var apiGroups = [{
+    domain: 'hc',
+    path: '/hc'
+}];
 
 var init = function() {
     Vue.prototype.axios = axios;
@@ -17,7 +21,7 @@ var init = function() {
     Vue.use(pageDelegate);  // 页面生命周期,页面间切换的封装，支持页面传值
     Vue.use(safeClick);  // 防连点
     Vue.use(gallery);
-    // Vue.use(http, {domain: '/rest'})
+    Vue.use(http, {apiGroups: apiGroups}); 
 }
 
 export default init;

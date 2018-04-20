@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Index from '@/page/indexPage/index.vue'
-// import About from '@/page/aboutPage/index.vue'
-// import Sub from '@/page/subPage/index.vue'
+import init from '../initPlugin';
+
 const Index = () => import('@/page/indexPage/index.vue');
 const About = () => import('@/page/aboutPage/index.vue');
 const Sub = () => import('@/page/subPage/index.vue');
@@ -25,7 +24,7 @@ var routes = [
     name: 'Sub',
     component: Sub
   }
-]
+];
 
 export default new Router({
   routes: routes

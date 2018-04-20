@@ -2,6 +2,7 @@ import uploadBlock from '@/components/upload.vue'
 
 export default {
     name: 'About',
+    isPage: true,
     title: '关于我们',
     data: function () {
         var openId = v.$url.parseUrl('openId');
