@@ -20,8 +20,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/testapi/*': {
-        target: 'http://localhost:80',
+      '/test/*': {
+        target: 'http://localhost:2333',
         changeOrigin: true,
         headers: {
           'Accept' : 'application/json, text/plain',

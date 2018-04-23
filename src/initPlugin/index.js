@@ -6,7 +6,7 @@ import safeClick from '@/plugins/safeClick.js'
 // import http from '@/plugins/http.js'
 import url from '@/plugins/url.js'
 // import gallery from '@/plugins/gallery.js'
-// import actionMonitor from '@/plugins/action-monitor.js'
+import actionMonitor from '@/plugins/action-monitor.js'
 import touch from '@/plugins/touch.js'
 
 var apiGroups = [{
@@ -24,6 +24,7 @@ var init = function() {
     // Vue.use(gallery);
     // Vue.use(http, {apiGroups: apiGroups});
     Vue.use(touch);
+    Vue.use(actionMonitor, { paramsArray: [], reqUrl: '/test/monitor' })
 }
 
 export default init;

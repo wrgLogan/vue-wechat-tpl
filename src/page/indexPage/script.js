@@ -5,10 +5,10 @@ export default {
         title: '微信sdk测试'
     },
     willEnterPage: function(data) {
-        console.log('will');
+        // console.log('will');
     },
     didEnterPage(data) {
-        console.log('did')
+        // console.log('did')
     },
     methods: {
         onTouchleft() {

@@ -52,7 +52,7 @@ var install = function(Vue, options) {
     };
 
     function resetAnimation() {
-        console.log('reset animation');
+        // console.log('reset animation');
         return new Promise(resolve => {
             setTimeout(() => {
                 root.$data.animation = defaultBackward || 'backward';
@@ -122,14 +122,14 @@ var install = function(Vue, options) {
                 };
                 
                 if (!firstMounted) {
-                    console.log(111);
+                    
                     resetAnimation().then(() => {
                         if(this.$options.didEnterPage) {
                             this.$options.didEnterPage.call(this, this.$data);
                         };
                     });
                 } else {
-                    console.log(222);
+                    
                     firstMounted = false;
                     setTimeout(() => {
                         if(this.$options.didEnterPage) {
@@ -161,7 +161,7 @@ var install = function(Vue, options) {
     });
 
     function pageDelegate(comp, _callback) {
-        console.log(comp.$options);
+        
         if (comp.$options.isPage) {
             _callback(pageData);
         }

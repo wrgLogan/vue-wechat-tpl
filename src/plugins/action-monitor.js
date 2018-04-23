@@ -4,11 +4,11 @@
 * descript: 用户行为检测,监听定制的用户点击行为以及重要的标签内容
 */
 
-var install = function (Vue) {
-    var CLICK_TAG = 'CLICK-TAG';
-    var INPUT_TAG = 'INPUT-TAG';
-    var PHONE_MOBILE_TAG = 'PHONE-NUMBER';
-    var PAGE_TITLE = 'PAGE-TITLE';
+var install = function (Vue, options) {
+    var CLICK_TAG = 'click-tag';
+    var INPUT_TAG = 'input-tag';
+    var PHONE_MOBILE_TAG = 'phone-number';
+    var PAGE_TITLE = 'page-title';
     var apiUrl = 'http://localhost:8000/testapi/json.php';
 
     var jsonParser = {
@@ -30,7 +30,7 @@ var install = function (Vue) {
 
         try{
             setTimeout(function() {
-                _this.sendPV();
+                // _this.sendPV();
                 _this.onClickDom();
             }, 500);
         } catch(e) {
@@ -133,7 +133,7 @@ var install = function (Vue) {
         }
 
         var inputs = document.querySelectorAll('[' + INPUT_TAG + ']');
-        console.log(inputs)
+        // console.log(inputs)
         for (var k in inputs) {
         // for (var i = 0; i < inputs.length; i++){
             
@@ -155,8 +155,6 @@ var install = function (Vue) {
         post(this.apiUrl, params);
     }
 
-    window.ActionMonitor = ActionMonitor;
-
     function post(url, params) {
         var xhr = new XMLHttpRequest();
         var jsonData = JSON.stringify(params);
@@ -168,7 +166,7 @@ var install = function (Vue) {
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                console.log('用户行为检测：' + xhr.responseText);
+                // console.log('action monitor => request success');
             }
         }
     };
@@ -236,15 +234,19 @@ var install = function (Vue) {
         return params;
     }
 
-    
+    options = options || {};
 
-    // Vue.mixin({
-    //     mounted(){
-    //         if (this.$options.acMonitor) {
+    var acMonitor = new ActionMonitor(options.paramsArray, options.reqUrl);
 
-    //         }
-    //     }
-    // })
+    Vue.mixin({
+        mounted(){
+            if (this.$options.isPage) {
+                setTimeout(() => {
+                    acMonitor.sendPV();                    
+                }, 400);
+            }
+        }
+    })
 
 };
 
