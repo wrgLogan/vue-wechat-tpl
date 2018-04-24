@@ -9,7 +9,7 @@ var install = function (Vue, options) {
     var INPUT_TAG = 'input-tag';
     var PHONE_MOBILE_TAG = 'phone-number';
     var PAGE_TITLE = 'page-title';
-    var apiUrl = 'http://localhost:8000/testapi/json.php';
+    var apiUrl = null;
 
     var jsonParser = {
         stringify: function(obj) {
@@ -67,7 +67,6 @@ var install = function (Vue, options) {
         // }
 
         try{    
-            // post(this.apiUrl, params);
             _this.sendInput();
         } catch(e) {
             console.log(e);
@@ -158,6 +157,11 @@ var install = function (Vue, options) {
     function post(url, params) {
         var xhr = new XMLHttpRequest();
         var jsonData = JSON.stringify(params);
+
+        if (!url) {
+            throw new Error('action-monitor: request url is null');
+            return;
+        }
 
         xhr.open('POST', url, true);
         xhr.setRequestHeader('Content-type', 'application/json');

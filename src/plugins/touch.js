@@ -34,7 +34,6 @@ var install = function(Vue, options) {
                 startX = touch.clientX;
                 endX = touch.clientX;
                 duration = Date.now();
-                console.log('start');
             });
 
             el.addEventListener(touchEvent.move, evt => {
@@ -44,7 +43,6 @@ var install = function(Vue, options) {
 
             el.addEventListener(touchEvent.end, evt => {
                 let touch = evt.targetTouches[0];
-                console.log('end');
 
                 var diffVal = endX - startX;
                 duration = Date.now() - duration;
@@ -71,7 +69,6 @@ var install = function(Vue, options) {
                 startX = touch.clientX;
                 endX = touch.clientX;
                 duration = Date.now();
-                console.log('start');
             });
 
             el.addEventListener(touchEvent.move, evt => {
@@ -81,7 +78,6 @@ var install = function(Vue, options) {
 
             el.addEventListener(touchEvent.end, evt => {
                 let touch = evt.targetTouches[0];
-                console.log('end');
 
                 var diffVal = endX - startX;
                 duration = Date.now() - duration;
@@ -109,7 +105,7 @@ var install = function(Vue, options) {
                 startY = touch.clientY;
                 endY = touch.clientY;
                 duration = Date.now();
-                console.log('start');
+                
             });
 
             el.addEventListener(touchEvent.move, evt => {
@@ -119,7 +115,6 @@ var install = function(Vue, options) {
 
             el.addEventListener(touchEvent.end, evt => {
                 let touch = evt.targetTouches[0];
-                console.log('end');
 
                 var diffVal = endY - startY;
                 duration = Date.now() - duration;
@@ -146,7 +141,6 @@ var install = function(Vue, options) {
                 startY = touch.clientY;
                 endY = touch.clientY;
                 duration = Date.now();
-                console.log('start');
             });
 
             el.addEventListener(touchEvent.move, evt => {
@@ -156,7 +150,6 @@ var install = function(Vue, options) {
 
             el.addEventListener(touchEvent.end, evt => {
                 let touch = evt.targetTouches[0];
-                console.log('end');
 
                 var diffVal = endY - startY;
                 duration = Date.now() - duration;
