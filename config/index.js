@@ -43,6 +43,15 @@ module.exports = {
           'Accept' : 'application/json, text/plain',
           'X-Requested-With': 'XMLHttpRequest'
         },
+      },
+      '*': {
+        // target: 'http://test.msjk95596.com',
+        target: 'http://192.168.1.121',
+        changeOrigin: true,
+        headers: {
+          'Accept' : 'application/json, text/plain',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
       }
     },
 

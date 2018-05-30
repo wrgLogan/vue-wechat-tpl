@@ -26,6 +26,34 @@ Http.prototype.post = function (path, domain, opt) {
     return axios.post(`${dmStr + path}`, opt);
 }
 
+Http.reqPromises = {};
+
+// 接口节流请求 同名同参数的接口在上一个接口请求返回前不会重复请求  新发出的请求直接返回老的请求的promise对象
+Http.prototype.spost = function(reqPath, opt) {
+    var path = reqPath + JSON.stringify(opt);
+    console.log(Http.reqPromises);
+    if (Http.reqPromises[path]) {
+        return Http.reqPromises[path].promise;
+    } else {
+        var p = new Promise((resolve, reject) => {
+            axios.post(`${reqPath}`, opt).then(res => {
+                Http.reqPromises[path] = null;
+                resolve(res);
+            }).catch(err => {
+                Http.reqPromises[path] = null;
+                reject(err);
+            });
+        });
+
+        Http.reqPromises[path] = {
+            opt: opt,
+            promise: p
+        }; 
+
+        return p;
+    }
+};
+
 Http.prototype.setDomain = function (domain) {
     this.domain = domain;
 }
@@ -53,29 +81,50 @@ Http.prototype.setApiGroups = function(groupParams) {
     }
 }
 
-Http.prototype.joinActivity = function() {
+Http.prototype.joinActivity = function () {
 
-    var oid = parseUrl('oid');
+    return new Promise((resolve, reject) => {
+        var oid = parseUrl('oid');
 
-    if (!oid) {
-        console.log('没有找到oid');
-        return;
-    }
+        if (!oid) {
+            reject('没有找到oid');
+            return;
+        } else {
+            this.setDefaultHeaders({
+                oid: oid
+            });
 
-    this.setDefaultHeaders({
-        oid: oid
+            var storageOid = sessionStorage.getItem('oid');
+            var storageOid;
+            if (storageOid && oid == storageOid) {
+                resolve();
+            } else {
+                axios.post('/act/activity/join', {}).then(res => {
+                    if ((res.data.returnCode === '200') || (res.data.returnCode === '400' && res.data.returnMsg === '你已参加活动')) {
+                        sessionStorage.setItem('oid', oid);
+                        resolve();
+                    } else {
+                        reject(res.data.returnMsg);
+                    }
+                });
+            }
+        }
     });
-    axios.post('act/activity/join', {});
+}
+
+Http.prototype.login = function(appkey) {
+    this.setAppKey(appkey);
+    return this.joinActivity();
 }
 
 // 给axios包了一层，加了domain字段 后台不同服务器的部署会导致domain不一样 比如/rest/v0/getUserInfo /hc/v0/getUserInfo
 var install = function (Vue, options) {
     var http = new Http();
-    var apiGroups = options.apiGroups;
+    // var apiGroups = options.apiGroups;
     Vue.prototype.$http = http;
-    options.appkey && http.setAppKey(options.appkey);
-    options.apiGroups && http.setApiGroups(options.apiGroups);
-    http.joinActivity();
+    // options.appkey && http.setAppKey(options.appkey);
+    // options.apiGroups && http.setApiGroups(options.apiGroups);
+    // http.joinActivity();
 };
 
 export default {

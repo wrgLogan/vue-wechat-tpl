@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '@/config.js';
 
 var devRedirectUri = 'http://healthtest.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
 var prodRedirectUri = 'http://health.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
@@ -12,7 +13,7 @@ var WxSdk = function(options) {
     this.authUrl = null;
     this.redirectUri = env === 'dev' ? devRedirectUri : prodRedirectUri;
     this.shareMenuVisiable = true;
-    this.defaultShareVisiable = options.defaultShareVisiable === false ? false : true;
+    // this.defaultShareVisiable = options.defaultShareVisiable === false ? false : true;
     this.defaultShareOption = {
         title: '',
         desc: '',
@@ -144,7 +145,7 @@ WxSdk.prototype.configShare = function(option) {
             title: title,
             desc: desc,
             link: link,
-            imgUrl: imgUrl,
+            imgUrl: handleLocalImgUrl(imgUrl),
             success: function() {
                 wxsdk.onShareSuccess && wxsdk.onShareSuccess('appMessage');
             },
@@ -156,7 +157,7 @@ WxSdk.prototype.configShare = function(option) {
         wx.onMenuShareTimeline({
             title: title,
             link: link,
-            imgUrl: imgUrl,
+            imgUrl: handleLocalImgUrl(imgUrl),
             success: function() {
                 wxsdk.onShareSuccess && wxsdk.onShareSuccess('timeline');
             },
@@ -175,7 +176,8 @@ WxSdk.prototype.openShareMenu = function() {
         console.log('open share menu');
         this.shareMenuVisiable = true;
         wx.showMenuItems({
-            menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            // menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline', 'menuItem:share:qq', 'menuItem:share:weiboApp', 'menuItem:share:facebook', 'menuItem:share:QZone'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+            menuList: ['menuItem:share:appMessage', 'menuItem:share:timeline'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
         });
     });
 }
@@ -230,36 +232,39 @@ WxSdk.prototype.authReload = function(url, params) {
     window.location.href = authUrl;
 }
 
+var wxsdk = new WxSdk();
+wxsdk.hideShareMenu();
+wxsdk.hideOuterBrowser();
+
 var install = function(Vue, options) {
-    var wxsdk = new WxSdk(options);
+    
     Vue.prototype.$wxsdk = wxsdk;
+    
 
     Vue.mixin({
         beforeRouteEnter(to, from, next) {
-            var redirectPath = parseUrl('redirect_path');
-
-            if (redirectPath) {
-                var url = deleteUrlQuery('redirect_path');
-                window.location.href = url + `#/${redirectPath}`;
-            } else {
-                next();
-            }
+            next();
         },
-        mounted: function() {
-
+        beforeMount: function() {
+            
             setTimeout(() => {
                 if(this.$options.isPage) {
-                    if (this.$options.shareOption) {
+                    if (('shareVisiable' in this.$options) && this.$options.shareVisiable === false) {  // 如果options中存在 shareVisiable 这个属性 并且是false
+                        wxsdk.hideShareMenu();
+                    } else if (this.$options.shareOption) {
                         wxsdk.configShare(this.$options.shareOption);
                         wxsdk.openShareMenu();
-                    } else if (wxsdk.defaultShareVisiable === true) {
+                    } else if (wxsdk.defaultShareOption) {
                         wxsdk.configShare(wxsdk.defaultShareOption);
                         wxsdk.openShareMenu();
                     } else {
-                        wxsdk.hideShareMemu();
+                        wxsdk.hideShareMenu();
                     }
                 }
             }, 100);
+        },
+        mounted: function() {
+            
         }
     });
 }
@@ -334,4 +339,31 @@ function insertUrlQuery(params) {
     });
 
     return location.origin + location.pathname + search;
+}
+
+//处理微信分享页面的图片url问题
+//webpack的url-loader里图片大小，小于10kB的是base64格式，大于10kB的是./static/格式
+function handleLocalImgUrl(url) {
+    url = url + '';
+    //服务器绝对路径
+    if (url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1) {
+        return url;
+    }
+    //本地图片
+    if (url.indexOf('data:image') !== -1) {
+        // base64 图片操作
+        return url;
+    } else {
+        //path 图片操作
+        let u = location.origin + location.pathname;
+        let lastIndex = u.lastIndexOf('/');
+        let imgUrlOri = u.slice(0, lastIndex);
+
+        if (url[0] == '.') {
+            return imgUrlOri + url.slice(1);
+        } else {
+            return imgUrlOri + url;
+        }
+        
+    }
 }

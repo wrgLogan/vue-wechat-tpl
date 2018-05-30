@@ -1,21 +1,5 @@
-# backend-demo
+# 开发几大原则
 
-> 后台项目模版
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+ - 一个项目只有一个appkey
+ - 点击之后触发接口的要加防连点处理（safeClick）
+ - 百度统计要加

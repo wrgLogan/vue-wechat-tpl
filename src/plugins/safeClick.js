@@ -22,7 +22,7 @@ var install = function(Vue, options) {
             function open() {
                 setTimeout(function() {
                     lock = false;
-                });
+                }, 300);
             };
 
             el.onclick = function() {
