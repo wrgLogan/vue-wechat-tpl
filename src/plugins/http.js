@@ -2,7 +2,7 @@ import axios from 'axios';
 
 var Http = function () {
     this.defaultHeaders = {};
-    this.apiGroups = {default: ''};
+    this.apiGroups = { default: '' };
 }
 
 Http.prototype.get = function (path, domain, opt) {
@@ -29,9 +29,9 @@ Http.prototype.post = function (path, domain, opt) {
 Http.reqPromises = {};
 
 // 接口节流请求 同名同参数的接口在上一个接口请求返回前不会重复请求  新发出的请求直接返回老的请求的promise对象
-Http.prototype.spost = function(reqPath, opt) {
+Http.prototype.spost = function (reqPath, opt) {
     var path = reqPath + JSON.stringify(opt);
-    console.log(Http.reqPromises);
+
     if (Http.reqPromises[path]) {
         return Http.reqPromises[path].promise;
     } else {
@@ -48,7 +48,7 @@ Http.prototype.spost = function(reqPath, opt) {
         Http.reqPromises[path] = {
             opt: opt,
             promise: p
-        }; 
+        };
 
         return p;
     }
@@ -72,8 +72,8 @@ Http.prototype.initDefaultHeaders = function (xhr) {
     });
 }
 
-Http.prototype.setApiGroups = function(groupParams) {
-   
+Http.prototype.setApiGroups = function (groupParams) {
+
     for (let i = 0, len = groupParams.length; i < len; i++) {
         var params = groupParams[i];
 
@@ -112,7 +112,7 @@ Http.prototype.joinActivity = function () {
     });
 }
 
-Http.prototype.login = function(appkey) {
+Http.prototype.login = function (appkey) {
     this.setAppKey(appkey);
     return this.joinActivity();
 }
@@ -122,6 +122,7 @@ var install = function (Vue, options) {
     var http = new Http();
     // var apiGroups = options.apiGroups;
     Vue.prototype.$http = http;
+    Vue.prototype.$lonix = lonix;
     // options.appkey && http.setAppKey(options.appkey);
     // options.apiGroups && http.setApiGroups(options.apiGroups);
     // http.joinActivity();
@@ -131,9 +132,9 @@ export default {
     install: install
 };
 
-var Lonix = function() {}
+var Lonix = function () { }
 
-Lonix.prototype.get = function(url, params) {
+Lonix.prototype.get = function (url, params) {
     var xhr = new XMLHttpRequest;
     var url = url + '?' + paramToQueryStr(params);
 
@@ -141,7 +142,7 @@ Lonix.prototype.get = function(url, params) {
     xhr.send();
 }
 
-Lonix.prototype.post = function(url, params, options) {
+Lonix.prototype.post = function (url, params, options) {
     var xhr = new XMLHttpRequest;
     var url = url;
     var options = options || {};
@@ -150,18 +151,45 @@ Lonix.prototype.post = function(url, params, options) {
     xhr.open('POST', url, true);
     setHeader(xhr, options.headers);
     if (!xhr.contentType) {
-        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        queryStr = JSON.stringify(params);
     } else if (xhr.contentType === 'application/json') {
         queryStr = JSON.stringify(params);
     }
     xhr.send(queryStr);
+
+    return new Promise((resolve, reject) => {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var resObj = {
+                    data: JSON.parse(xhr.responseText),
+                    status: 200
+                };
+                resolve(resObj);
+            } else if (xhr.readyState == 4 && xhr.status == 400) {
+                
+                var errObj = {};
+                try {
+                    errObj = JSON.parse(xhr.responseText);
+                } catch(e) {
+                    reject(e);
+                };
+
+                resolve({
+                    data: errObj,
+                    status: 400
+                });
+            }
+        }
+    })
+    
 }
 
 var lonix = new Lonix;
 
 function setHeader(xhr, header) {
     var header = header || {};
-    Object.keys(header).forEach(function(key) {
+    Object.keys(header).forEach(function (key) {
         var value = header[key];
 
         if (key === 'Content-Type' || key === 'content-type') {
@@ -176,7 +204,7 @@ function paramToQueryStr(params) {
     var params = params || {};
     var queryStr = '';
 
-    Object.keys(params).forEach(function(key) {
+    Object.keys(params).forEach(function (key) {
         var value = params[key];
 
         if (queryStr.length) {
