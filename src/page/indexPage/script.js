@@ -9,7 +9,7 @@ export default {
         
     },
     didEnterPage(data) {
-        new ClipboardJS('.btn');
+        
     },
     methods: {
         

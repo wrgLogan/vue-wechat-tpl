@@ -1,11 +1,29 @@
 import axios from 'axios';
 
-var Http = function () {
+var Http = function() {
     this.defaultHeaders = {};
     this.apiGroups = { default: '' };
-}
 
-Http.prototype.get = function (path, domain, opt) {
+};
+//     //添加请求拦截器
+// axios.interceptors.request.use(config => {
+//     //在发送请求之前做某事，比如说 设置loading动画显示
+//     return config
+// }, error => {
+//     //请求错误时做些事
+//     return Promise.reject(error)
+// })
+
+// //添加响应拦截器
+// axios.interceptors.response.use(response => {
+//     //对响应数据做些事，比如说把loading动画关掉
+//     return response
+// }, error => {
+//     //请求错误时做些事
+//     return Promise.reject(error)
+// })
+Http.prototype.get = function(path, domain, opt) {
+
     if (typeof domain !== 'string') {
         opt = domain;
         domain = 'default';
@@ -15,23 +33,22 @@ Http.prototype.get = function (path, domain, opt) {
     return axios.get(`${dmStr + path}`, opt);
 };
 
-Http.prototype.post = function (path, domain, opt) {
+Http.prototype.post = function(path, domain, opt) {
     if ((typeof domain) !== 'string') {
         opt = domain;
         domain = 'default';
     }
 
     var dmStr = this.apiGroups[domain] || '';
-    console.log(domain);
+    // console.log(domain);
     return axios.post(`${dmStr + path}`, opt);
 }
 
 Http.reqPromises = {};
 
 // 接口节流请求 同名同参数的接口在上一个接口请求返回前不会重复请求  新发出的请求直接返回老的请求的promise对象
-Http.prototype.spost = function (reqPath, opt) {
+Http.prototype.spost = function(reqPath, opt) {
     var path = reqPath + JSON.stringify(opt);
-
     if (Http.reqPromises[path]) {
         return Http.reqPromises[path].promise;
     } else {
@@ -48,21 +65,28 @@ Http.prototype.spost = function (reqPath, opt) {
         Http.reqPromises[path] = {
             opt: opt,
             promise: p
-        };
+        }; 
 
         return p;
     }
 };
 
-Http.prototype.setDomain = function (domain) {
+Http.prototype.setDomain = function(domain) {
     this.domain = domain;
 }
 
-Http.prototype.setAppKey = function (appkey) {
+Http.prototype.setAppKey = function(appkey) {
     axios.defaults.headers.common.appkey = appkey;
 }
 
+Http.prototype.setDefaultHeaders = function (opt) {
+    Object.keys(opt).forEach(key => {
+        axios.defaults.headers.common[key] = opt[key];
+    });
+}
+
 Http.prototype.initDefaultHeaders = function (xhr) {
+
     var http = this;
 
     Object.keys(this.defaultHeaders).forEach(key => {
@@ -73,6 +97,7 @@ Http.prototype.initDefaultHeaders = function (xhr) {
 }
 
 Http.prototype.setApiGroups = function (groupParams) {
+
 
     for (let i = 0, len = groupParams.length; i < len; i++) {
         var params = groupParams[i];
@@ -94,38 +119,39 @@ Http.prototype.joinActivity = function () {
                 oid: oid
             });
 
-            var storageOid = sessionStorage.getItem('oid');
+            var storageOid = localStorage.getItem('oid');
             var storageOid;
-            if (storageOid && oid == storageOid) {
-                resolve();
-            } else {
+            // if (storageOid && oid == storageOid) {
+            //     resolve();
+            // } else {
                 axios.post('/act/activity/join', {}).then(res => {
                     if ((res.data.returnCode === '200') || (res.data.returnCode === '400' && res.data.returnMsg === '你已参加活动')) {
-                        sessionStorage.setItem('oid', oid);
+                        localStorage.setItem('oid', oid);
                         resolve();
                     } else {
                         reject(res.data.returnMsg);
                     }
                 });
-            }
+            // }
         }
-    });
+    })
+    
 }
 
-Http.prototype.login = function (appkey) {
+Http.prototype.login = function(appkey) {
     this.setAppKey(appkey);
+
     return this.joinActivity();
+
 }
 
 // 给axios包了一层，加了domain字段 后台不同服务器的部署会导致domain不一样 比如/rest/v0/getUserInfo /hc/v0/getUserInfo
-var install = function (Vue, options) {
+var install = function(Vue, options) {
     var http = new Http();
-    // var apiGroups = options.apiGroups;
+    var apiGroups = options.apiGroups;
     Vue.prototype.$http = http;
-    Vue.prototype.$lonix = lonix;
-    // options.appkey && http.setAppKey(options.appkey);
-    // options.apiGroups && http.setApiGroups(options.apiGroups);
-    // http.joinActivity();
+    options.appkey && http.setAppKey(options.appkey);
+    options.apiGroups && http.setApiGroups(options.apiGroups);
 };
 
 export default {
@@ -151,38 +177,11 @@ Lonix.prototype.post = function (url, params, options) {
     xhr.open('POST', url, true);
     setHeader(xhr, options.headers);
     if (!xhr.contentType) {
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        queryStr = JSON.stringify(params);
+        xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
     } else if (xhr.contentType === 'application/json') {
         queryStr = JSON.stringify(params);
     }
     xhr.send(queryStr);
-
-    return new Promise((resolve, reject) => {
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var resObj = {
-                    data: JSON.parse(xhr.responseText),
-                    status: 200
-                };
-                resolve(resObj);
-            } else if (xhr.readyState == 4 && xhr.status == 400) {
-                
-                var errObj = {};
-                try {
-                    errObj = JSON.parse(xhr.responseText);
-                } catch(e) {
-                    reject(e);
-                };
-
-                resolve({
-                    data: errObj,
-                    status: 400
-                });
-            }
-        }
-    })
-    
 }
 
 var lonix = new Lonix;
@@ -236,4 +235,12 @@ function parseUrl(queryKey) {
     }
 
     return null;
+}
+
+function equalOpt(opt1, opt2) {
+    if (!(opt1 instanceof Object) || !(opt2 instanceof Object)) {
+        return false;
+    } else {
+        return JSON.stringify(opt1) == JSON.stringify(opt2);
+    }
 }

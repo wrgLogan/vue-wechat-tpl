@@ -7,9 +7,7 @@ import initPlugin from './initPlugin/index.js'
 import rem from 'amfe-flexible'
 import store from './vuex/index.js'
 import config from '@/config.js'
-import ClipboardJS from 'clipboard'
 
-window.ClipboardJS = ClipboardJS;
 window.Vue = Vue;
 window.v = Vue.prototype;
 initPlugin();
