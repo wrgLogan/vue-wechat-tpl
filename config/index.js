@@ -28,8 +28,8 @@ module.exports = {
           'X-Requested-With': 'XMLHttpRequest'
         },
       },
-      '/hc/*': {
-        target: 'http://activitytest.minshenglife.com',
+      '/stargate_kangebao/*': {
+        target: 'http://10.0.22.57:11180',
         changeOrigin: true,
         headers: {
           'Accept' : 'application/json, text/plain',
@@ -45,8 +45,8 @@ module.exports = {
         },
       },
       '*': {
-        // target: 'http://test.msjk95596.com',
-        target: 'http://192.168.1.121',
+        target: 'http://test.msjk95596.com',
+        // target: 'http://192.168.1.121',
         changeOrigin: true,
         headers: {
           'Accept' : 'application/json, text/plain',

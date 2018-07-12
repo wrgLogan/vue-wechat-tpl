@@ -18,7 +18,7 @@ var init = function() {
     Vue.use(pageDelegate);  // 页面生命周期,页面间切换的封装，支持页面传值
     Vue.use(safeClick);  // 防连点
     Vue.use(storage);
-    Vue.use(http);
+    Vue.use(http, {apiGroups: [{domain: 'kangebao', path: '/kangebao'}]});
     // Vue.use(gallery);
     // Vue.use(touch);
     // Vue.use(actionMonitor, { paramsArray: [], reqUrl: '/test/monitor' })

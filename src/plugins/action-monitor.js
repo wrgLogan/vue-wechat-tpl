@@ -123,6 +123,12 @@ var install = function (Vue, options) {
                 } catch(e) {
                     params[key] = value;
                 }
+            } else if (window.localStorage && (value = localStorage.getItem(key))) {
+                try{
+                    params[key] = JSON.parse(value);
+                } catch(e) {
+                    params[key] = value;
+                }
             } else {
                 var cookieObj = parseCookie();
                 if (cookieObj[key]) {

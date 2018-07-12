@@ -17,6 +17,9 @@ Vue.config.productionTip = false;
 v.$wxsdk.apiTicket('/act/wechat/shares/sign');
 v.$wxsdk.setDefaultShare(config.defaultShareOption);
 v.$wxsdk.onReady(() => {});
+
+v.$http.setDomain(config.apiDomain);
+
 new Vue({
   el: '#app',
   data: {},

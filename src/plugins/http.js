@@ -28,8 +28,8 @@ Http.prototype.get = function(path, domain, opt) {
         opt = domain;
         domain = 'default';
     }
-    var dmStr = this.apiGroups[domain] || '';
 
+    var dmStr = this.apiGroups[domain] || this.domain ? this.domain : '';
     return axios.get(`${dmStr + path}`, opt);
 };
 
@@ -39,8 +39,7 @@ Http.prototype.post = function(path, domain, opt) {
         domain = 'default';
     }
 
-    var dmStr = this.apiGroups[domain] || '';
-    // console.log(domain);
+    var dmStr = this.apiGroups[domain] || this.domain ? this.domain : '';
     return axios.post(`${dmStr + path}`, opt);
 }
 
@@ -98,10 +97,8 @@ Http.prototype.initDefaultHeaders = function (xhr) {
 
 Http.prototype.setApiGroups = function (groupParams) {
 
-
     for (let i = 0, len = groupParams.length; i < len; i++) {
         var params = groupParams[i];
-
         this.apiGroups[params.domain] = params.path;
     }
 }
@@ -151,7 +148,7 @@ var install = function(Vue, options) {
     var apiGroups = options.apiGroups;
     Vue.prototype.$http = http;
     options.appkey && http.setAppKey(options.appkey);
-    options.apiGroups && http.setApiGroups(options.apiGroups);
+    options.apiGroups && http.setApiGroups(apiGroups);
 };
 
 export default {

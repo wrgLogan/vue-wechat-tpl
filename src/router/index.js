@@ -4,7 +4,6 @@ import init from '../initPlugin';
 
 const Index = () => import('@/page/indexPage/index.vue');
 const Sub = () => import('@/page/subPage/index.vue');
-const Feeling = () => import('@/page/feelingPage/index.vue');
 
 Vue.use(Router);
 
@@ -18,11 +17,6 @@ var routes = [
     path: '/sub',
     name: 'Sub',
     component: Sub
-  },
-  {
-    path: '/feeling',
-    name: 'Feeling',
-    component: Feeling
   }
 ];
 
