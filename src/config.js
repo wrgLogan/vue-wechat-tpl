@@ -8,7 +8,7 @@ var config = {
         imgUrl: shareIcon,
         link: `${location.origin}${location.pathname}?redirect_path=feeling`
     },
-    apiDomain: '/stargate_kangebao'
+    apiDomain: ''
 }
 
 export default config;

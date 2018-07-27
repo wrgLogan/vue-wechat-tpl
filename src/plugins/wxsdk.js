@@ -3,8 +3,12 @@ import config from '@/config.js';
 
 var devRedirectUri = 'http://healthtest.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
 var prodRedirectUri = 'http://health.minshenglife.com/rest/v0/winxinoauth/lianjiaopenid';
+var isWechat = isWeiXin();
+var u = navigator.userAgent;
+var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
 
-var WxSdk = function(options) {
+var WxSdk = function (options) {
     var options = options || {};
 
     this.jsApiList = null;
@@ -60,13 +64,14 @@ WxSdk.prototype.defaultJsApiList = [
 ]
 
 // 签名接口 程序进入时调用 传入签名接口url
-WxSdk.prototype.apiTicket = function(url) {
+WxSdk.prototype.apiTicket = function (url, isOld) {
     var wxsdk = this;
-    var data = window.location.origin + location.pathname + location.search;
-    
-    axios.post(url, {data: data}).then(res => {
+    var data = isOld ? location.pathname + location.search : window.location.origin + location.pathname + location.search;
+    this.ticketUrl = url;
+
+    axios.post(url, { data: data }).then(res => {
         var data = res.data;
-        
+
         if (data.appId) {
             wxsdk.configOptions = data;
             this.configOptions.debug = false;
@@ -76,13 +81,13 @@ WxSdk.prototype.apiTicket = function(url) {
 }
 
 // 配置微信api 签名后调用
-WxSdk.prototype.configWxApis = function() {
+WxSdk.prototype.configWxApis = function () {
     var wxsdk = this;
     var jsApiList = this.jsApiList || this.defaultJsApiList;
     this.configOptions.jsApiList = jsApiList;
 
     console.log('配置微信初始化');
-    
+
     wx.config({
         debug: this.configOptions.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: this.configOptions.appId, // 必填，公众号的唯一标识
@@ -98,9 +103,9 @@ WxSdk.prototype.configWxApis = function() {
 }
 
 // 
-WxSdk.prototype.ready = function() {
+WxSdk.prototype.ready = function () {
 
-    while(this.readyFnList.length > 0) {
+    while (this.readyFnList.length > 0) {
         var fn = this.readyFnList.shift();
         fn.apply(this);
     }
@@ -108,7 +113,7 @@ WxSdk.prototype.ready = function() {
     this.configIsReady = true;
 }
 
-WxSdk.prototype.onReady = function(fn) {
+WxSdk.prototype.onReady = function (fn) {
     if (this.configIsReady) {
         fn.apply(this);
     } else {
@@ -117,12 +122,12 @@ WxSdk.prototype.onReady = function(fn) {
 }
 
 // 配置默认分享
-WxSdk.prototype.setDefaultShare = function(option) {
+WxSdk.prototype.setDefaultShare = function (option) {
     this.defaultShareOption = option;
 }
 
 // 设置分享
-WxSdk.prototype.configShare = function(option) {
+WxSdk.prototype.configShare = function (option) {
 
     var wxsdk = this;
     var option = option || {};
@@ -146,33 +151,33 @@ WxSdk.prototype.configShare = function(option) {
             desc: desc,
             link: link,
             imgUrl: handleLocalImgUrl(imgUrl),
-            success: function() {
+            success: function () {
                 wxsdk.onShareSuccess && wxsdk.onShareSuccess('appMessage');
             },
-            cancel: function() {
+            cancel: function () {
                 wxsdk.onShareCancel && wxsdk.onShareCancel('appMessage');
             }
         });
-    
+
         wx.onMenuShareTimeline({
             title: title,
             link: link,
             imgUrl: handleLocalImgUrl(imgUrl),
-            success: function() {
+            success: function () {
                 wxsdk.onShareSuccess && wxsdk.onShareSuccess('timeline');
             },
-            cancel: function() {
+            cancel: function () {
                 wxsdk.onShareCancel && wxsdk.onShareCancel('timeline');
             }
         });
-    
+
     }
-    
+
 }
 
 // 打开分享菜单 
-WxSdk.prototype.openShareMenu = function() {
-    this.onReady(function() {
+WxSdk.prototype.openShareMenu = function () {
+    this.onReady(function () {
         console.log('open share menu');
         this.shareMenuVisiable = true;
         wx.showMenuItems({
@@ -183,8 +188,8 @@ WxSdk.prototype.openShareMenu = function() {
 }
 
 // 关闭分享菜单
-WxSdk.prototype.hideShareMenu = function() {
-    this.onReady(function() {
+WxSdk.prototype.hideShareMenu = function () {
+    this.onReady(function () {
         console.log('hide share menu');
         this.shareMenuVisiable = false;
         wx.hideMenuItems({
@@ -194,8 +199,8 @@ WxSdk.prototype.hideShareMenu = function() {
 }
 
 // 关闭别的浏览器打开
-WxSdk.prototype.hideOuterBrowser = function() {
-    this.onReady(function() {
+WxSdk.prototype.hideOuterBrowser = function () {
+    this.onReady(function () {
         wx.hideMenuItems({
             menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
         });
@@ -203,20 +208,55 @@ WxSdk.prototype.hideOuterBrowser = function() {
 }
 
 // 打开在别的浏览器打开菜单
-WxSdk.prototype.openOuterBrowser = function() {
-    this.onReady(function() {
+WxSdk.prototype.openOuterBrowser = function () {
+    this.onReady(function () {
         wx.showMenuItems({
             menuList: ['menuItem:openWithQQBrowser', 'menuItem:openWithSafari', 'menuItem:copyUrl']
         });
     });
 }
 
+WxSdk.prototype.getLocation = function () {
+    
+    return new Promise((resolve, reject) => {
+
+        this.onReady(function(){
+            if (isWechat && window.wx) {
+                wx.getLocation({
+                    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                    success: function (res) {
+                        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                        resolve({
+                            latitude: latitude,
+                            longitude: longitude
+                        });
+                    },
+                    fail: function(err) {
+                        reject(err);
+                    },
+                    cancel: function(err) {
+                        reject(err);
+                    }
+                });
+            } else {
+                resolve({
+                    latitude: "31.2402",
+                    longitude: "121.49302",
+                })
+            }
+        });
+    })
+    
+    
+}
+
 // 授权登陆
-WxSdk.prototype.authReload = function(url, params) {
+WxSdk.prototype.authReload = function (url, params) {
     var wxsdk = this;
     var url = url || '';
 
-    Object.keys(params).forEach(function(key, index) {
+    Object.keys(params).forEach(function (key, index) {
         var value = params[key];
 
         if (index === 0) {
@@ -236,19 +276,19 @@ var wxsdk = new WxSdk();
 wxsdk.hideShareMenu();
 wxsdk.hideOuterBrowser();
 
-var install = function(Vue, options) {
-    
+var install = function (Vue, options) {
+
     Vue.prototype.$wxsdk = wxsdk;
-    
+
 
     Vue.mixin({
         beforeRouteEnter(to, from, next) {
             next();
         },
-        beforeMount: function() {
-            
+        beforeMount: function () {
+
             setTimeout(() => {
-                if(this.$options.isPage) {
+                if (this.$options.isPage) {
                     if (('shareVisiable' in this.$options) && this.$options.shareVisiable === false) {  // 如果options中存在 shareVisiable 这个属性 并且是false
                         wxsdk.hideShareMenu();
                     } else if (this.$options.shareOption) {
@@ -263,8 +303,8 @@ var install = function(Vue, options) {
                 }
             }, 100);
         },
-        mounted: function() {
-            
+        mounted: function () {
+
         }
     });
 }
@@ -318,7 +358,7 @@ function deleteUrlQuery(queryKey) {
                 } else {
                     resSearch += `&${key}=${val}`;
                 }
-            } 
+            }
         }
     }
 
@@ -364,6 +404,17 @@ function handleLocalImgUrl(url) {
         } else {
             return imgUrlOri + url;
         }
-        
+
+    }
+}
+
+function isWeiXin() {
+    //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
+    var ua = window.navigator.userAgent.toLowerCase();
+    //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+    if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        return true;
+    } else {
+        return false;
     }
 }
