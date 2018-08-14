@@ -7,7 +7,16 @@ const os = require('os');
 
 var localhost = '';
 try {
-  var network = os.networkInterfaces()
+  var network = os.networkInterfaces();
+  Object.keys(network).forEach(function(key) {
+    var nets = network[key];
+    
+    nets.forEach(function(netItem) {
+      if (/192\.168\./.test(netItem.address)) {
+        localhost = netItem.address;
+      }
+    })
+  });
   localhost = network[Object.keys(network)[0]][1].address
 } catch (e) {
   localhost = 'localhost';

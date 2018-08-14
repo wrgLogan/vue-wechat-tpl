@@ -1,3 +1,5 @@
+import 'babel-polyfill';  // 支持es6的primise等api
+
 import Vue from 'vue'
 import App from './App'
 import router from './router'
@@ -7,6 +9,8 @@ import initPlugin from './initPlugin/index.js'
 import rem from 'amfe-flexible'
 import store from './vuex/index.js'
 import config from '@/config.js'
+
+
 
 window.Vue = Vue;
 window.v = Vue.prototype;
