@@ -23,6 +23,7 @@ v.$wxsdk.setDefaultShare(config.defaultShareOption);
 v.$wxsdk.onReady(() => {});
 
 v.$http.setDomain(config.apiDomain);
+v.$lonix.setDomain(config.apiDomain);
 
 new Vue({
   el: '#app',
