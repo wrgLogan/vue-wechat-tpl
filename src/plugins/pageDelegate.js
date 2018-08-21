@@ -1,4 +1,4 @@
-import { INSPECT_MAX_BYTES } from "buffer";
+import { uuid, deepAssign } from '@/common/helpers/utils'
 
 var defaultTitle = document.title;
 var rendIndex = 0;
@@ -81,7 +81,21 @@ var install = function(Vue, options) {
             });
 
             Object.keys(this.$route.query).forEach(key => {
-                this.$options.Data[key] = this.$route.query[key];
+                if (key === 'objKeys') {
+                    var objKeys = this.$route.query[key].split('-');
+                    
+                    objKeys.forEach(objKey => {
+                        
+                        var obj = JSON.parse(localStorage.getItem(objKey));
+                        obj = obj ? obj : {};
+                        deepAssign(this.$options.Data, obj);
+                        
+                    });
+                } else {
+                    console.log(this.$route.query[key]);
+                    this.$options.Data[key] = this.$route.query[key];
+                }
+                
             });
 
             pageData = {};
@@ -174,7 +188,9 @@ export default {
 };
 
 function objToUrlQuery(params) {
+    console.log(params);
     var search = '';
+    var objKeys = [];
 
     Object.keys(params).forEach((key) => {
         var val = params[key];
@@ -184,8 +200,20 @@ function objToUrlQuery(params) {
             } else {
                 search += `&${key}=${encodeURIComponent(val)}`;
             }
+        } else if (typeof val === 'object') {
+            var objId = uuid(10);
+            objKeys.push(objId);
+            var obj = {};
+            obj[key] = val;
+            localStorage.setItem(objId, JSON.stringify(obj));
         }
     });
+
+    if (search.length === 0) {
+        search += `?objKeys=${objKeys.join('-')}`
+    } else {
+        search += `&objKeys=${objKeys.join('-')}`
+    }
 
     return search;
 }

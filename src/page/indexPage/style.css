@@ -4,3 +4,20 @@
     height: 100%;
     background-color: #eee;
 }
+
+#wheel{
+    height: 270px;
+    overflow: hidden;
+}
+
+ul{
+    margin-top: 100px;
+}
+
+ul li{
+    height: 50px;
+    line-height: 50px;
+    /* background-color: #fff; */
+    text-align: center;
+    font-size: 16px;
+}
