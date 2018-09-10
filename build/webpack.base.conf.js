@@ -25,6 +25,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      '~static': resolve('static')
     }
   },
   module: {
@@ -61,6 +62,14 @@ module.exports = {
         options: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+        }
+      },
+      {
+        test: /\.(pdf|xls|xlsx|doc|docx)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('doc/[name].[hash:7].[ext]')
         }
       }
     ]

@@ -1,4 +1,5 @@
 import { uuid, deepAssign } from '@/common/helpers/utils'
+import { $localStorage } from '@/common/helpers/storage'
 
 var defaultTitle = document.title;
 var rendIndex = 0;
@@ -11,6 +12,8 @@ var install = function(Vue, options) {
     var defaultBackward = options && options.defaultBackward ? options.defaultBackward : 'backward';
     var pageData = {};
     var switchLock = false;
+
+    clearObjStorage();
 
     Vue.prototype.$switchTo = function(path, data, animation) {
         if (switchLock) return;
@@ -80,27 +83,32 @@ var install = function(Vue, options) {
                 this.$options.Data[key] = pageData[key];
             });
 
-            Object.keys(this.$route.query).forEach(key => {
-                if (key === 'objKeys') {
-                    var objKeys = this.$route.query[key].split('-');
-                    
-                    objKeys.forEach(objKey => {
+            if (this.$route && this.$options.isPage) {
+                Object.keys(this.$route.query).forEach(key => {
+                    if (key === 'objKeys') {
+                        var objKeys = this.$route.query[key].split('-');
                         
-                        var obj = JSON.parse(localStorage.getItem(objKey));
-                        obj = obj ? obj : {};
-                        deepAssign(this.$options.Data, obj);
-                        
-                    });
-                } else {
-                    console.log(this.$route.query[key]);
-                    this.$options.Data[key] = this.$route.query[key];
-                }
-                
-            });
+                        objKeys.forEach(objKey => {
+                            var storageObj = $localStorage.getItem('storageObj');
+                            var obj = storageObj[objKey];
+                            obj = obj ? obj : {};
+                            deepAssign(this.$options.Data, obj);
+                        });
+                    } else {
+                        console.log(this.$route.query[key]);
+                        this.$options.Data[key] = this.$route.query[key];
+                    }
+                });
+            }
 
             pageData = {};
 
             return this.$options.Data;
+        },
+        beforeRouteEnter: function(to, from, next) {
+            console.log(to, from);
+            console.log(to.matched);
+            next();
         },
         beforeCreate: function() {
             rendIndex++;
@@ -188,7 +196,7 @@ export default {
 };
 
 function objToUrlQuery(params) {
-    console.log(params);
+    var storageObj = $localStorage.getItem('storageObj') || {};
     var search = '';
     var objKeys = [];
 
@@ -201,20 +209,38 @@ function objToUrlQuery(params) {
                 search += `&${key}=${encodeURIComponent(val)}`;
             }
         } else if (typeof val === 'object') {
-            var objId = uuid(10);
+
+            var objId = '';
+            // Object.keys(storageObj).forEach(key => {
+            //     var objStr = JSON.stringify(storageObj[key]);
+            //     if (objStr == JSON.stringify(val)) {
+            //         objId = key;
+            //         objKeys.push(key);
+            //     }
+            // })
+
+            objId = uuid(10);
             objKeys.push(objId);
             var obj = {};
             obj[key] = val;
-            localStorage.setItem(objId, JSON.stringify(obj));
+            storageObj[objId] = obj;
+            $localStorage.setItem('storageObj', storageObj);
         }
     });
-
-    if (search.length === 0) {
-        search += `?objKeys=${objKeys.join('-')}`
-    } else {
-        search += `&objKeys=${objKeys.join('-')}`
+    if (objKeys.length > 0) {
+        if (search.length === 0) {
+            search += `?objKeys=${objKeys.join('-')}`
+        } else {
+            search += `&objKeys=${objKeys.join('-')}`
+        }
     }
+    
 
     return search;
 }
 
+function clearObjStorage() {
+    if (history && history.length == 1) {
+        $localStorage.setItem('storageObj', {});
+    }
+}

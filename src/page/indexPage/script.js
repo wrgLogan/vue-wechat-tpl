@@ -1,33 +1,28 @@
-import BScroll from 'better-scroll'
+import ScrollView from '@/modules/scroll-view/index.vue'
+// import pdfjsLib from '@/lib/js/pdf.js'
+import pdfUrl from '~static/jiankanggaozhi.pdf'
 
 export default {
     name: 'Index',
     isPage: true,  // 必填项
     Data: {
-        list: ['武士','武士','武士','武士','武士','武士','武士','武士','武士','武士','武士','22']
+        list: [
+            
+        ]
     },
     willEnterPage: function(data) {
-    
+        
     },
     mounted() {
-        this.$nextTick(() => {
-            var w = document.getElementById('wheel');
-            
-            var wheel = new BScroll(w, {
-                wheel: {
-                    selectedIndex: 2,
-                    wheelWrapperClass: 'wheel-scroll',
-                    wheelItemClass: 'wheel-item'
-                },
-                // swipeTime: 1000,
-                observeDOM: false
-            })
-        })
+        
     },
     didEnterPage(data) {
-        
+        console.log(pdfUrl);
     },
     methods: {
         
+    },
+    components: {
+        ScrollView
     }
 }
