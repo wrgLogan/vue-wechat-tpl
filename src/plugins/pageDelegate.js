@@ -95,7 +95,7 @@ var install = function(Vue, options) {
                             deepAssign(this.$options.Data, obj);
                         });
                     } else {
-                        console.log(this.$route.query[key]);
+                        // console.log(this.$route.query[key]);
                         this.$options.Data[key] = this.$route.query[key];
                     }
                 });
@@ -106,8 +106,8 @@ var install = function(Vue, options) {
             return this.$options.Data;
         },
         beforeRouteEnter: function(to, from, next) {
-            console.log(to, from);
-            console.log(to.matched);
+            // console.log(to, from);
+            // console.log(to.matched);
             next();
         },
         beforeCreate: function() {

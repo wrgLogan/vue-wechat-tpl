@@ -1,5 +1,11 @@
 import 'babel-polyfill';  // 支持es6的primise等api
 
+// 引入swiper
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+Vue.component(swiper.name, swiper);
+Vue.component(swiperSlide.name, swiperSlide);
+
 import Vue from 'vue'
 import App from './App'
 import router from './router'

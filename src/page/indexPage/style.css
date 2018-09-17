@@ -29,3 +29,16 @@ ul li{
 .item{
     height: 50px;
 }
+
+.sw-container{
+    height: 100%;
+}
+
+canvas{
+    
+}
+
+#drawImg{
+    width: 100%;
+    float: left;
+}
