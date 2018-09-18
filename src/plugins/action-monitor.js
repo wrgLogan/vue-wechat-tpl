@@ -133,6 +133,8 @@ var install = function (Vue, options) {
                 var cookieObj = parseCookie();
                 if (cookieObj[key]) {
                     params[key] = cookieObj[key];
+                } else {
+                    params[key] = parseUrl()[key];
                 }
             }
         }
@@ -247,6 +249,7 @@ var install = function (Vue, options) {
     options = options || {};
 
     var acMonitor = new ActionMonitor(options.paramsArray, options.reqUrl);
+    Vue.prototype.$acMonitor = acMonitor;
 
     Vue.mixin({
         mounted(){
