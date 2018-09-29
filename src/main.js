@@ -30,11 +30,14 @@ v.$wxsdk.onReady(() => {});
 
 v.$http.setDomain(config.apiDomain);
 
-new Vue({
-  el: '#app',
-  data: {},
-  router,
-  store,
-  template: '<App/>',
-  components: { App }
-});
+console.log(3);
+// if (window.pageReady) {
+  new Vue({
+    el: '#app',
+    data: {},
+    router,
+    store,
+    template: '<App/>',
+    components: { App }
+  });
+// }

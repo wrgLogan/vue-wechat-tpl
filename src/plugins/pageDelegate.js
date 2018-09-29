@@ -1,5 +1,6 @@
 import { uuid, deepAssign } from '@/common/helpers/utils'
 import { $localStorage } from '@/common/helpers/storage'
+import config from '@/config.js'
 
 var defaultTitle = document.title;
 var rendIndex = 0;
@@ -12,6 +13,8 @@ var install = function(Vue, options) {
     var defaultBackward = options && options.defaultBackward ? options.defaultBackward : 'backward';
     var pageData = {};
     var switchLock = false;
+
+    var lastHistoryLength = history.length;
 
     clearObjStorage();
 
@@ -28,7 +31,6 @@ var install = function(Vue, options) {
         root.$data.animation = animation || defaultForward || 'forward';
         routePath = path + objToUrlQuery(pageData);
         router.push(routePath);
-        
     };
 
     Vue.prototype.$goBackward = function(animation) {
@@ -36,8 +38,6 @@ var install = function(Vue, options) {
         switchLock = true;
         root.$data.animation = animation || defaultBackward || 'backward';
         router.back();
-
-        
     };
 
     Vue.prototype.$replace = function(path, data, animation) {
@@ -47,11 +47,10 @@ var install = function(Vue, options) {
             pageData = data;
         } else if (typeof data === 'string') {
             animation = data;
-        }
+        }   
 
         root.$data.animation = animation || 'fade';
         router.replace(path);
-        
     };
 
     function resetAnimation() {
@@ -70,6 +69,7 @@ var install = function(Vue, options) {
      * willEnterPage 
      * didEnterPage
     */
+    var setTitleLock = false;
 
     Vue.mixin({
         // 每个页面的data是上个页面传递的data和页面的Data组合的值，同名属性该页面的优先级更高
@@ -106,28 +106,49 @@ var install = function(Vue, options) {
             return this.$options.Data;
         },
         beforeRouteEnter: function(to, from, next) {
-            // console.log(to, from);
-            // console.log(to.matched);
             next();
         },
         beforeCreate: function() {
+            
+
             rendIndex++;
             // 第二个组件
             if (rendIndex === 2) {
                 root = this;
                 router = this.$router;
+                router.push = function(location, onComplete, onAbort) {
+                    root.$data.animation = defaultForward;
+                    this.history.push(location, onComplete, onAbort);
+                }
             }
             
             if (root && this.$parent === root) {
                 app.page = this;
-            }
 
+                if (window.history && window.history.pushState) {                             
+                    window.addEventListener('popstate', function (v) {                                            
+                        root.$data.animation = defaultBackward;  
+                        // setTimeout(() => {
+                        //     history.pushState(null, null, location.search + location.hash);
+                        // }, 300)                          
+                    });
+                }
+            }
             
         },
         created: function() {
+            
             pageDelegate(this, pageData => {
                 if (this.$options.willEnterPage) {
                     this.$options.willEnterPage.call(this, this.$data);
+
+                    // if (lastHistoryLength < history.length) {
+                    //     root.$data.animation = defaultForward;
+                    // } else {
+                    //     root.$data.animation = defaultBackward;
+                    // };
+
+                    // lastHistoryLength = history.length;
                 }
             });
         },
@@ -135,17 +156,13 @@ var install = function(Vue, options) {
             
         },
         mounted: function() {
-            
             pageDelegate(this, pageDate => {
-                if ( this.$options.title) {
-                    document.title = this.$options.title;
-                } else {
-                    document.title = defaultTitle;
-                };
+                
                 
                 if (!firstMounted) {
                     
                     resetAnimation().then(() => {
+                        
                         if(this.$options.didEnterPage) {
                             this.$options.didEnterPage.call(this, this.$data);
                         };
@@ -160,6 +177,20 @@ var install = function(Vue, options) {
                     }, 300);
                     
                 };
+
+                if (setTitleLock) return;
+
+                if ( this.$options.title) {
+                    document.title = this.$options.title;
+                } else if (config.projectTitle) {
+                    document.title = config.projectTitle;
+                } else {
+                    document.title = defaultTitle;
+                };
+
+                setTimeout(() => {
+                    setTitleLock = false;
+                }, 200)
             });
                 
         },

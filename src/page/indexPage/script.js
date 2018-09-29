@@ -1,6 +1,6 @@
 import ScrollView from '@/modules/scroll-view/index.vue'
 // import pdfjsLib from '@/lib/js/pdf.js'
-import pdfUrl from '~static/jiankanggaozhi.pdf'
+// import pdfUrl from '~static/jiankanggaozhi.pdf'
 
 export default {
     name: 'Index',

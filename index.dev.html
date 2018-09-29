@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <script>window.env = 'prod';</script>
+    <script>window.env = 'dev';</script>
     <script>
       var testOauthURL = 'http://test.msjk95596.com/test/act/wechat/base/access_token/?state=',
         oauthURL = /test/.test(location.origin) ? 'http://test.msjk95596.com/act/wechat/base/access_token/?state=' : 'http://www.msjk95596.com/act/wechat/base/access_token/?state=' ;
@@ -70,6 +70,7 @@
           return location.origin + location.pathname + resSearch;
       }
     </script>
+    <!-- <script src="./static/index.js"></script> -->
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
     <title></title>
   </head>

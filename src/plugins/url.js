@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 function parseUrl(queryKey) {
     var search = location.search;
 
@@ -89,12 +91,46 @@ function handleLocalImgUrl(url) {
     }
 }
 
+// 获取URL
+function getQueryStrDecode(key, callback) {
+    // 获取url上的query
+    var val = parseUrl(key);
+    // alert(val);
+    if (!val) {
+        callback && callback(val);
+        return ;
+    };
+
+    var url = 'http://test.msjk95596.com/act/wechat/decrypt';
+
+    if (/health\./.test(location.origin)) { 
+        url = 'http://www.msjk95596.com/act/wechat/decrypt';
+    } else {
+        url = 'http://test.msjk95596.com/act/wechat/decrypt';
+    }
+    
+    // 调取接口解密数据
+    axios.post(url, {oid: val}).then(res => {
+        // alert(JSON.stringify(res));
+        if (res.data.returnCode == '200') {
+            callback && callback(res.data.value);
+        } else {
+            callback && callback(null);
+            console.log(res.data.returnMsg);
+        }
+    }).catch(err => {
+        callback && callback(null);
+        console.log(err);
+    })
+}
+
 var install = function(Vue, options) {
     Vue.prototype.$url = {
         parseUrl: parseUrl,
         deleteUrlQuery: deleteUrlQuery,
         insertUrlQuery: insertUrlQuery,
-        handleLocalImgUrl: handleLocalImgUrl
+        handleLocalImgUrl: handleLocalImgUrl,
+        getQueryStrDecode: getQueryStrDecode
     }
 }
 

@@ -5,10 +5,12 @@
 */
 
 var install = function (Vue, options) {
+    var options = options || {};
     var CLICK_TAG = 'click-tag';
     var INPUT_TAG = 'input-tag';
     var PHONE_MOBILE_TAG = 'phone-number';
     var PAGE_TITLE = 'page-title';
+    var scope = options.scope;
     var apiUrl = null;
 
     var jsonParser = {
