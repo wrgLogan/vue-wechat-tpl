@@ -8,7 +8,7 @@ import url from '@/plugins/url.js'
 import storage from '@/plugins/storage.js'
 import config from '@/config.js'
 // import gallery from '@/plugins/gallery.js'
-// import actionMonitor from '@/plugins/action-monitor.js'
+import actionMonitor from '@/plugins/action-monitor.js'
 // import touch from '@/plugins/touch.js'
 
 var init = function() {
@@ -22,7 +22,7 @@ var init = function() {
     Vue.use(http, {apiGroups: [{domain: 'kangebao', path: '/kangebao'}]});
     // Vue.use(gallery);
     // Vue.use(touch);
-    // Vue.use(actionMonitor, { paramsArray: [], reqUrl: '/test/monitor', scope: config.storageScope })
+    Vue.use(actionMonitor, { paramsArray: ['openid'], reqUrl: '/track/action', scope: config.storageScope })
 }
 
 export default init;

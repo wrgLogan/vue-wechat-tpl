@@ -4,6 +4,8 @@
 * descript: 用户行为检测,监听定制的用户点击行为以及重要的标签内容
 */
 
+import { uuid } from '../common/helpers/utils.js';
+
 var install = function (Vue, options) {
     var options = options || {};
     var CLICK_TAG = 'click-tag';
@@ -28,8 +30,10 @@ var install = function (Vue, options) {
     var ActionMonitor = function (keyArr, apiUrl) {
         var _this = this;
         this.apiUrl = apiUrl;
-        this.keyArr = keyArr || [];
-
+        keyArr = keyArr || [];
+        keyArr.push('userid');
+        this.keyArr = keyArr;
+        
         try{
             setTimeout(function() {
                 // _this.sendPV();
@@ -37,6 +41,11 @@ var install = function (Vue, options) {
             }, 500);
         } catch(e) {
             console.log(e);
+        }
+
+        var userid = localStorage.getItem('userid');
+        if (!userid) {
+            localStorage.setItem('userid', uuid());
         }
         
     };

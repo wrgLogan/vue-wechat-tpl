@@ -13,7 +13,7 @@
       if (loginRequired && !parseUrl('oid')) {
           if (env == 'dev') oauthURL = testOauthURL;
           location.href = oauthURL + location.origin + location.pathname + encodeURIComponent(location.search);
-          return;
+          
       } else {
           var redirectPath = parseUrl('redirect_path');
           if (redirectPath) {

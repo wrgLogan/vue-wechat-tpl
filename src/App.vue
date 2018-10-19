@@ -3,6 +3,9 @@
         <transition :name="animation">
             <router-view class="page-container" comp-type="page"></router-view>
         </transition>
+        <!-- 两个固定埋点 -->
+        <input type="hidden" input-tag="main_source" value="wechat">
+        <input type="hidden"  input-tag="project_name" value="test"/>
     </div>
 </template>
 <script>
