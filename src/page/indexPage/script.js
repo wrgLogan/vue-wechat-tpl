@@ -24,8 +24,8 @@ export default {
         
     },
     mounted() {
-        var canvas = this.$refs.myCanvas;
-        window.jigsaw = new Jigsaw(canvas);
+        // var canvas = this.$refs.myCanvas;
+        window.jigsaw = new Jigsaw();
 
         var myImgUrl = require('../../assets/image/bg.png');
         var iconUrl = require('../../assets/image/shareicon.jpg');

@@ -1,6 +1,8 @@
 class Jigsaw {
-    constructor(canvas, width, height) {
-        this.canvas = canvas;
+    constructor(width, height) {
+
+        var canvas = this.canvas = document.createElement('canvas');
+        // document.body.appendChild(this.canvas);
         canvas.width = width || document.body.offsetWidth * 2;
         canvas.height = height || document.body.offsetHeight * 2;
         canvas.style.width = '100%';
