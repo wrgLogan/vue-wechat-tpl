@@ -173,6 +173,79 @@ var install = function (Vue, options) {
         post(this.apiUrl, params);
     }
 
+    ActionMonitor.prototype.trackEvent = function(opt) {
+        var _this = this;
+        var url = location.href;
+        var phoneDom = document.querySelector('[' + PHONE_MOBILE_TAG + ']');
+        var phoneNumber = phoneDom ? getValue(phoneDom) : null;
+        var titleDom = document.querySelector('[' + PAGE_TITLE + ']');
+        var pageTitle = titleDom ? getValue(titleDom) : null;
+        var opt = opt || {};
+        
+        var params = { url: url};
+
+        if (phoneNumber) {
+            params.phoneNumber = phoneNumber;
+        }
+        if (pageTitle) {
+            params.pageTitle = pageTitle;
+        }
+
+        params.element = 'trackEvent';
+
+        Object.keys(opt).forEach(function(key) {
+            params[key] = opt[key]
+        })
+
+        // for (var i in this.keyArr) {
+        for (var i = 0; i < this.keyArr.length; i++){
+            var key = this.keyArr[i];
+            var value;
+            if (window.sessionStorage && (value = sessionStorage.getItem(key))) {
+                try{
+                    params[key] = JSON.parse(value);
+                } catch(e) {
+                    params[key] = value;
+                }
+            } else if (window.localStorage && (value = localStorage.getItem(key))) {
+                try{
+                    params[key] = JSON.parse(value);
+                } catch(e) {
+                    params[key] = value;
+                }
+            } else {
+                var cookieObj = parseCookie();
+                if (cookieObj[key]) {
+                    params[key] = cookieObj[key];
+                } else {
+                    params[key] = parseUrl()[key];
+                }
+            }
+        }
+
+        var inputs = document.querySelectorAll('[' + INPUT_TAG + ']');
+        // console.log(inputs)
+        for (var k in inputs) {
+        // for (var i = 0; i < inputs.length; i++){
+            
+            var inputItem = inputs[k];
+            // var key = inputItem.getAttribute(INPUT_TAG);
+
+            if (typeof inputItem == 'object') {
+                var key = inputItem[INPUT_TAG] || inputItem.getAttribute(INPUT_TAG);
+            }
+            
+            if (!params[key]) {
+                var val = getValue(inputItem);
+                if (val && val !== '') {
+                    params[key] = val;
+                }
+            }
+            
+        }
+        post(this.apiUrl, params);
+    }
+
     function post(url, params) {
         var xhr = new XMLHttpRequest();
         var jsonData = JSON.stringify(params);
