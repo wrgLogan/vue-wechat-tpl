@@ -1,6 +1,9 @@
 <template>
   <div class="page">
-      {{ age }}
+      <!-- {{ age }} -->
+      <template>
+        <provision :tiaokuan="tiaokuan" :json="json" :firstPageInfo="firstPageInfo" ></provision>
+      </template>
   </div>
 </template>
 <script src="./script.js"></script>
