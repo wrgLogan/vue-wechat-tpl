@@ -45,6 +45,9 @@ var $hideLoading = function() {
     if (!$iosLoading) return;
 
     $iosLoading.style.opacity = 0;
+    setTimeout(() => {
+        $iosLoading.remove();
+    }, 300);
 }
 
 var $message = {
@@ -790,7 +793,7 @@ function createLoading() {
         'position': 'absolute',
         'left': '50%',
         'top': '50%',
-        'padding': '8px',
+        'padding': '4px 8px 8px 8px',
         'transform': 'translate(-50%, -50%)',
         'background': 'rgba(0,0,0,.8)',
         'zIndex': '13500',

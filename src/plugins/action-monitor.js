@@ -338,9 +338,9 @@ var install = function (Vue, options) {
     Vue.mixin({
         mounted(){
             if (this.$options.isPage) {
-                setTimeout(() => {
-                    acMonitor.sendPV();                    
-                }, 400);
+                // setTimeout(() => {
+                //     acMonitor.sendPV();                    
+                // }, 400);
             }
         }
     })
