@@ -800,7 +800,8 @@ function createLoading() {
         'borderRadius': '5px',
         'height': '50px',
         'opacity': '0',
-        'transition': 'opacity .3s'
+        'transition': 'opacity .3s',
+        'white-space': 'nowrap'
     }
 
     var spanStyle = {
