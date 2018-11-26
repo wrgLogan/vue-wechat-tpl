@@ -146,16 +146,18 @@ WxSdk.prototype.configShare = function (option) {
 
     function setShare() {
         console.log('set share');
+
+        // 由于立即执行在回调中调用接口会报network error，回调加了300ms延迟执行
         wx.onMenuShareAppMessage({
             title: title,
             desc: desc,
             link: link,
             imgUrl: handleLocalImgUrl(imgUrl),
             success: function () {
-                wxsdk.onShareSuccess && wxsdk.onShareSuccess('appMessage');
+                wxsdk.onShareSuccess && setTimeout(() => {wxsdk.onShareSuccess('appMessage')}, 300);
             },
             cancel: function () {
-                wxsdk.onShareCancel && wxsdk.onShareCancel('appMessage');
+                wxsdk.onShareCancel && setTimeout(() => {wxsdk.onShareCancel('appMessage')}, 300);
             }
         });
 
@@ -164,10 +166,10 @@ WxSdk.prototype.configShare = function (option) {
             link: link,
             imgUrl: handleLocalImgUrl(imgUrl),
             success: function () {
-                wxsdk.onShareSuccess && wxsdk.onShareSuccess('timeline');
+                wxsdk.onShareSuccess && setTimeout(() => {wxsdk.onShareSuccess('timeline')}, 300);
             },
             cancel: function () {
-                wxsdk.onShareCancel && wxsdk.onShareCancel('timeline');
+                wxsdk.onShareCancel && setTimeout(() => {wxsdk.onShareCancel('timeline')}, 300);
             }
         });
 
