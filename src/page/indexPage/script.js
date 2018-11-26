@@ -6,22 +6,18 @@ import Jigsaw from '@/common/tools/Jigsaw.js'
 export default {
     name: 'Index',
     isPage: true,  // 必填项
-    data:function() {
-        return {
-            list: [
-                
-            ],
-            swiperOption: {
-                pagination: {
-                    el: '.swiper-pagination'
-                },
-                direction: 'vertical'
+    Data: {
+        list: [],
+        swiperOption: {
+            pagination: {
+                el: '.swiper-pagination'
             },
-            dataURL: ''
-        }
-    } ,
-    willEnterPage: function(data) {
-        
+            direction: 'vertical'
+        },
+        dataURL: ''
+    },
+    willEnterPage: function (data) {
+
     },
     mounted() {
         // var canvas = this.$refs.myCanvas;
@@ -54,15 +50,15 @@ export default {
             color: 'blue'
         })
 
-        jigsaw.imgOnload = function(dataURL) {
+        jigsaw.imgOnload = function (dataURL) {
             this.dataURL = dataURL;
         }.bind(this);
     },
     didEnterPage(data) {
-        
+
     },
     methods: {
-        
+
     },
     components: {
         ScrollView

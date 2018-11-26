@@ -136,3 +136,67 @@ v.$sessionStorage.getItem('name');
 v.localStorage.setItem('name', 'logan');
 v.$localStorage.getItem('name');
 ```
+
+## 可复用封装
+
+### provision 组件
+JSON格式自动渲染出html，展示条款
+
+```
+//  <provision :tiaokuan="tiaokuan" :json="json" :firstPageInfo="firstPageInfo" ></provision>
+// json:[]条款json数据
+// firstPageInfo:{ 条款第一页的数据
+//     title:"条款名称",
+//         tip:"本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。",
+//         guide:[
+//                 {
+//                 titel:"head",
+//                 arr:[
+//                     {
+//                         des:"描述",
+//                         num:'2.1'
+//                     }
+//                 ]
+//             }
+//         ],
+//         remind:"条款是保险合同的重要内容，为充分保障您的权益，请您仔细阅读本条款。"
+//  }
+```
+
+### Jigsaw 
+图片拼接工具，利用canvas的toDataURL方法，将渲染在canvas上的图片导出成图片，实现多张图片的合成，同时支持文字输入。
+
+```
+window.jigsaw = new Jigsaw();
+
+var myImgUrl = require('../../assets/image/bg.png');
+var iconUrl = require('../../assets/image/shareicon.jpg');
+
+jigsaw.drawImage(myImgUrl);
+
+jigsaw.drawImage(iconUrl, {
+	center: true,
+	y: 300,
+	width: 200,
+	height: 200
+})
+
+jigsaw.fillText('你好啊', {
+	center: true,
+	y: 500,
+	fontSize: '30px',
+	color: '#fff'
+})
+
+jigsaw.fillText('你好啊', {
+	center: false,
+	x: 200,
+	y: 600,
+	fontSize: '30px',
+	color: 'blue'
+})
+
+jigsaw.imgOnload = function (dataURL) {
+	this.dataURL = dataURL;
+}.bind(this);
+```
