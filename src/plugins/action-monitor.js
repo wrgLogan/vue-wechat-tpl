@@ -30,8 +30,12 @@ var install = function (Vue, options) {
     var ActionMonitor = function (keyArr, apiUrl) {
         var _this = this;
         this.apiUrl = apiUrl;
+        var userid = localStorage.getItem('userid');
+        var sessionid = sessionStorage.getItem('sessionid');
+
         keyArr = keyArr || [];
         keyArr.push('userid');
+        keyArr.push('sessionid');
         this.keyArr = keyArr;
         
         try{
@@ -43,9 +47,12 @@ var install = function (Vue, options) {
             console.log(e);
         }
 
-        var userid = localStorage.getItem('userid');
         if (!userid) {
             localStorage.setItem('userid', uuid());
+        }
+
+        if (!sessionid) {
+            sessionStorage.setItem('sessionid', uuid());
         }
         
     };

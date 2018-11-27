@@ -10,11 +10,11 @@ var install = function(Vue, options) {
     var root;
     var router;
     var defaultForward = options && options.defaultForward ? options.defaultForward : 'forward';
+    var forwardAnimation = null;
+    var backwardAnimation = null;
     var defaultBackward = options && options.defaultBackward ? options.defaultBackward : 'backward';
     var pageData = {};
     var switchLock = false;
-
-    var lastHistoryLength = history.length;
 
     clearObjStorage();
 
@@ -29,6 +29,7 @@ var install = function(Vue, options) {
         }
 
         root.$data.animation = animation || defaultForward || 'forward';
+        forwardAnimation = animation;
         routePath = path + objToUrlQuery(pageData);
         router.push(routePath);
     };
@@ -37,6 +38,7 @@ var install = function(Vue, options) {
         if (switchLock) return;
         switchLock = true;
         root.$data.animation = animation || defaultBackward || 'backward';
+        backwardAnimation = animation;
         router.back();
     };
 
@@ -109,7 +111,6 @@ var install = function(Vue, options) {
             next();
         },
         beforeCreate: function() {
-            
 
             rendIndex++;
             // 第二个组件
@@ -117,7 +118,10 @@ var install = function(Vue, options) {
                 root = this;
                 router = this.$router;
                 router.push = function(location, onComplete, onAbort) {
-                    root.$data.animation = defaultForward;
+                    root.$data.animation = forwardAnimation || defaultForward;
+                    setTimeout(() => {
+                        forwardAnimation = null;
+                    }, 300);
                     this.history.push(location, onComplete, onAbort);
                 }
             }
@@ -127,7 +131,10 @@ var install = function(Vue, options) {
 
                 if (window.history && window.history.pushState) {                             
                     window.addEventListener('popstate', function (v) {                                            
-                        root.$data.animation = defaultBackward;  
+                        root.$data.animation = backwardAnimation || defaultBackward; 
+                        setTimeout(() => {
+                            backwardAnimation = null;
+                        }, 300); 
                         // setTimeout(() => {
                         //     history.pushState(null, null, location.search + location.hash);
                         // }, 300)                          
